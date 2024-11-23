@@ -1,14 +1,13 @@
 #include "../include/engine.hpp"
+#include "Icons.hpp"
+#include "ObjectInspector.hpp"
+#include "ShaderIcon.hpp"
+#include "utils.hpp"
 #include <raylib.h>
 
 EngineState::EngineState() {
 
   // uggggghhhhhhhhhhhhhhhhhhhhhhhhh
-
-  Objects = make_shared<GameObjectContainer>();
-  icons = make_shared<IconContainer>();
-
-  selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
   InitWindow(0, 0, "levelbuilder");
 
@@ -22,10 +21,19 @@ EngineState::EngineState() {
   if (path.find("build") != string::npos) {
     path = path.substr(0, path.find("build"));
   }
+  Objects = make_shared<GameObjectContainer>();
+  icons = make_shared<IconContainer>();
+  ShaderIcons = make_shared<ShaderIconContainer>();
 
-  i32 left_offset = 0;
+  selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
-  i32 top_offset = 0;
+  inspector = make_unique<ObjectInspector>();
+
+  i32 left_offset_tx = 0;
+  i32 left_offset_sh = 0;
+
+  i32 top_offset_tx = 0;
+  i32 top_offset_sh = 0;
 
   SceneCam.target = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
   SceneCam.offset = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
@@ -39,22 +47,28 @@ EngineState::EngineState() {
   UICam.target = {(f32)GetScreenWidth() / 2,
                   (f32)GetScreenHeight() / 2 + Bar.barFrame.height / 2};
 
-  selectionWindow = {0, 0, BOX_WIDTH * 2, f32(GetScreenWidth())};
-
   SetTargetFPS(60);
 
   // sweet mother of jesus
   for (const auto &entry : fs::directory_iterator(path)) {
     if (entry.is_regular_file()) {
       if (endswith(entry.path(), ".png")) {
-        auto icon = icons->add_new(entry.path(), left_offset * BOX_WIDTH,
-                                   top_offset * BOX_WIDTH);
+        TextureIcon *icon =
+            icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
+                           top_offset_tx * BOX_WIDTH);
         selection->new_object<TextureIcon>(icon, ICON);
-        left_offset++;
-        if (left_offset * BOX_WIDTH >= BOX_WIDTH * 2) {
-          left_offset = 0;
-          top_offset++;
+        left_offset_tx++;
+        if (left_offset_tx * BOX_WIDTH >= BOX_WIDTH * 2) {
+          left_offset_tx = 0;
+          top_offset_tx++;
         }
+      }
+      if (endswith(entry.path(), ".frag") ||
+          endswith(entry.path(), ".shader")) {
+        ShaderIcon *icon =
+            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
+                                 top_offset_sh * BOX_WIDTH);
+        selection->new_object<ShaderIcon>(icon, SHADERICON);
       }
     }
   }
@@ -80,7 +94,7 @@ void EngineState::loop() {
 
   while (!WindowShouldClose()) {
 
-    selection->update(&selectionWindow, Bar.icons->IsOpen);
+    selection->update(Bar.icons->IsOpen);
     if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998) {
       SceneCam.zoom += (f32)GetMouseWheelMove() * 0.02;
     }
@@ -95,10 +109,13 @@ void EngineState::loop() {
     BeginDrawing();
     ClearBackground(BLACK);
 
+    selection->draw();
     Objects->draw(&SceneCam);
-    DrawRectangleRec(selectionWindow, Color{140, 140, 140, 255});
     if (Bar.icons->IsOpen) {
       icons->draw(&Bar.barFrame);
+    }
+    if (Bar.shaders->IsOpen) {
+      ShaderIcons->draw(&Bar.barFrame);
     }
     Bar.draw();
     EndDrawing();

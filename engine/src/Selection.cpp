@@ -9,17 +9,22 @@ Selection::Selection(shared_ptr<GameObjectContainer> GOR,
   currentLayer = 0;
   camera = cameraRef;
   isSelected = false;
+  selectionWindow = {0, 0, BOX_WIDTH * 2, (f32)GetScreenHeight()};
 }
 
-void Selection::update(Rectangle *selectionWindow, bool IconsSeletable) {
+void Selection::update(bool IconsSeletable) {
 
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isSelected) {
     Vector2 Mouse = GetMousePosition();
+
+    cout << Mouse.x << "  " << Mouse.y << endl;
     Objects.foreach ([this, Mouse, IconsSeletable](Selectable *object) {
       switch (object->type) {
       case ICON:
+        cout << "ICON\n";
         if (IconsSeletable) {
-          if (CheckCollisionPointRec(Mouse, ((TextureIcon *)object->ptr)->scale)) {
+          if (CheckCollisionPointRec(Mouse,
+                                     ((TextureIcon *)object->ptr)->scale)) {
             this->Selected->ptr = (Selectable *)object->ptr;
             this->Selected->type = ICON;
             this->isSelected = true;
@@ -27,12 +32,15 @@ void Selection::update(Rectangle *selectionWindow, bool IconsSeletable) {
         }
         break;
       case OBJECT:
+        cout << "OBJECT\n";
         GameObject *p = (GameObject *)object->ptr;
-        if (CheckCollisionPointRec(Mouse, p->matrix)) {
-          this->Selected->ptr = (Selectable *)object->ptr;
-          this->Selected->type = OBJECT;
-          this->Selected->key = object->key;
-          this->isSelected = true;
+        Vector2 screen =
+            GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
+        cout << screen.x << "  " << screen.y << "  " << p->matrix.width << "  "
+             << p->matrix.height << endl;
+
+        if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
+                                           p->matrix.height})) {
         }
         break;
       }
@@ -44,10 +52,14 @@ void Selection::update(Rectangle *selectionWindow, bool IconsSeletable) {
     Rectangle WindowRec = {0, 0, (f32)GetScreenWidth(), (f32)GetScreenHeight()};
     switch (Selected->type) {
     case ICON:
-      if (!CheckCollisionPointRec(Mouse, *selectionWindow) &&
+      if (!CheckCollisionPointRec(Mouse, selectionWindow) &&
           CheckCollisionPointRec(Mouse, WindowRec)) {
         TextureIcon *p = (TextureIcon *)Selected->ptr;
-        GameObjectsRef->add_new(p, camera, currentLayer);
+        auto pt = GameObjectsRef->add_new(p, camera, currentLayer);
+        auto node = Objects.append(pt);
+        node->data->type = OBJECT;
+        pt->ptr = pt;
+        pt->key = node;
         isSelected = false;
         Selected->ptr = nullptr;
         Selected->key = nullptr;
@@ -58,6 +70,10 @@ void Selection::update(Rectangle *selectionWindow, bool IconsSeletable) {
       break;
     }
   }
+}
+
+void Selection::draw() {
+  DrawRectangleRec(selectionWindow, Color{140, 140, 140, 255});
 }
 
 Selection::~Selection() { delete Selected; }

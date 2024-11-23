@@ -4,6 +4,7 @@
 typedef enum SelectableType {
   ICON = 0,
   OBJECT = 1,
+  SHADERICON = 2,
 } SelectableType;
 
 typedef struct Selectable {

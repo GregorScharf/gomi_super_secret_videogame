@@ -38,3 +38,5 @@ void ShaderIcon::draw(Rectangle *barFrame) {
   DrawText(TextFormat(drawText.c_str()), dest.x + fontsize, dest.y + fontsize,
            fontsize, BLACK);
 }
+
+void ShaderIcon::make_ref(node<ShaderIcon *> *reference) { ref = reference; }

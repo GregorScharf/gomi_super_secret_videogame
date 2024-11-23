@@ -6,7 +6,7 @@
 #include "utils.hpp"
 #include <raylib.h>
 
-class ShaderIcon : Selectable {
+class ShaderIcon : public Selectable {
 public:
   Shader shader;
   Rectangle scale;
@@ -16,6 +16,6 @@ public:
   node<ShaderIcon *> *ref;
 
   ShaderIcon(string &path, i32 x, i32 y);
-  void make_ref(node<ShaderIcon *> reference);
+  void make_ref(node<ShaderIcon *> *reference);
   void draw(Rectangle *barFrame);
 };

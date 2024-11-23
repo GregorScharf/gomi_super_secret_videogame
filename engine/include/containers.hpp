@@ -2,6 +2,8 @@
 
 #include "GameObjects.hpp"
 #include "Icons.hpp"
+#include "ShaderIcon.hpp"
+#include "list.hpp"
 #include "selectable.hpp"
 #include "types.hpp"
 #include <raylib.h>
@@ -25,6 +27,17 @@ public:
   TextureIcon *add_new(string path, i32 x, i32 y);
 
   void foreach (std::function<void(TextureIcon *)> func);
+
+  void draw(Rectangle *barFrame);
+};
+
+class ShaderIconContainer {
+  DLinkedList<ShaderIcon *> Icons;
+
+public:
+  ShaderIcon *add_new(string path, i32 x, i32 y);
+
+  void foreach (std::function<void(ShaderIcon *)> func);
 
   void draw(Rectangle *barFrame);
 };

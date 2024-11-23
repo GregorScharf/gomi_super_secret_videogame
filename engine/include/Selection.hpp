@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObjects.hpp"
 #include "Icons.hpp"
+#include "ObjectInspector.hpp"
 #include "containers.hpp"
 #include "list.hpp"
 #include "selectable.hpp"
@@ -18,16 +19,20 @@ class Selection {
   bool isSelected;
   Camera2D *camera;
 
+  ObjectInspector inspector;
+
   shared_ptr<GameObjectContainer> GameObjectsRef;
   shared_ptr<IconContainer> IconsRef;
 
 public:
+  Rectangle selectionWindow;
+
   u8 currentLayer;
   Selection(shared_ptr<GameObjectContainer> GOR, shared_ptr<IconContainer> IR,
             Camera2D *cameraRef);
   ~Selection();
 
-  void update(Rectangle *selectionWindow, bool IconsSeletable);
+  void update(bool IconsSeletable);
 
   template <typename ObjectType>
   node<Selectable *> *new_object(Selectable *newObject, SelectableType Type) {
@@ -41,4 +46,5 @@ public:
     node->data->ptr = newObject;
     return node;
   }
+  void draw();
 };
