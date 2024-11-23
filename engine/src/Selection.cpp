@@ -16,6 +16,7 @@ Selection::Selection(shared_ptr<GameObjectContainer> GOR,
   camera = cameraRef;
   isSelected = false;
   selectionWindow = {0, 0, BOX_WIDTH * 2, (f32)GetScreenHeight()};
+  selectionWindow = {0, 0, BOX_WIDTH * 2, (f32)GetScreenHeight()};
 }
 
 void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
@@ -106,6 +107,10 @@ void Selection::draw() {
                      0, Color{100, 200, 255, 100});
     }
   }
+}
+
+void Selection::draw() {
+  DrawRectangleRec(selectionWindow, Color{140, 140, 140, 255});
 }
 
 Selection::~Selection() { delete Selected; }

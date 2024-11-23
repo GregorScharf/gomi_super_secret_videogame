@@ -181,3 +181,18 @@ void LayerContainer::update() {
     });
   }
 }
+void ShaderIconContainer::foreach (std::function<void(ShaderIcon *)> func) {
+  Icons.foreach (func);
+}
+
+void ShaderIconContainer::draw(Rectangle *barFrame) {
+
+  Icons.foreach ([barFrame](ShaderIcon *icon) { icon->draw(barFrame); });
+}
+ShaderIcon *ShaderIconContainer::add_new(string path, i32 x, i32 y) {
+
+  ShaderIcon *newIcon = new ShaderIcon(path, x, y);
+  auto ref = Icons.append(newIcon);
+  newIcon->make_ref(ref);
+  return newIcon;
+}

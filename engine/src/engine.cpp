@@ -75,13 +75,15 @@ EngineState::EngineState() {
   Bar.Layers->SelectedLayer = &LayerIcons->currentLayer;
 
   // sweet mother of jesus
-  TextureIcon* last = NULL;
   for (const auto &entry : fs::directory_iterator(path)) {
     if (entry.is_regular_file()) {
       if (endswith(entry.path(), ".png")) {
         TextureIcon *icon =
             icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
                            top_offset_tx * (BOX_WIDTH / 2));
+        TextureIcon *icon =
+            icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
+                           top_offset_tx * BOX_WIDTH);
         selection->new_object<TextureIcon>(icon, ICON);
         left_offset_tx++;
         if (left_offset_tx * BOX_WIDTH >= BOX_WIDTH * 2) {
@@ -113,7 +115,26 @@ EngineState::EngineState() {
           top_offset_sh++;
         }
       }
+      if (endswith(entry.path(), ".frag") ||
+          endswith(entry.path(), ".shader")) {
+        ShaderIcon *icon =
+            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
+                                 top_offset_sh * BOX_WIDTH);
+        selection->new_object<ShaderIcon>(icon, SHADERICON);
+      }
+      if (endswith(entry.path(), ".frag") ||
+          endswith(entry.path(), ".shader")) {
+        ShaderIcon *icon =
+            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
+                                 top_offset_sh * BOX_WIDTH);
+        selection->new_object<ShaderIcon>(icon, SHADERICON);
+      }
     }
+  }
+
+  if (last) {
+    Objects->add_new(last, &UICam, 1);
+    Objects->add_new(last, &UICam, 2);
   }
 
   if (last) {
@@ -195,6 +216,7 @@ void EngineState::loop() {
     BeginDrawing();
     ClearBackground(BLACK);
 
+    selection->draw();
     Objects->draw(&SceneCam);
     dragger->draw();
     DrawRectangleRec(selection->selectionWindow, Color{140, 140, 140, 255});
