@@ -75,6 +75,7 @@ EngineState::EngineState() {
   Bar.Layers->SelectedLayer = &LayerIcons->currentLayer;
 
   // sweet mother of jesus
+  TextureIcon* last = NULL;
   for (const auto &entry : fs::directory_iterator(path)) {
     if (entry.is_regular_file()) {
       if (endswith(entry.path(), ".png")) {
@@ -100,13 +101,34 @@ EngineState::EngineState() {
           top_offset_sh++;
         }
       }
+      if (endswith(entry.path(), ".frag") ||
+          endswith(entry.path(), ".shader")) {
+        ShaderIcon *icon =
+            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
+                                 top_offset_sh * BOX_WIDTH);
+        selection->new_object<ShaderIcon>(icon, SHADERICON);
+        left_offset_sh++;
+        if (left_offset_sh * BOX_WIDTH >= BOX_WIDTH * 2) {
+          left_offset_sh = 0;
+          top_offset_sh++;
+        }
+      }
     }
+  }
+
+  if (last) {
+    Objects->add_new(last, &UICam, 1);
+    Objects->add_new(last, &UICam, 2);
   }
 
   this->loop();
 }
 
 EngineState::~EngineState() {
+
+  Serializer::ToToml(*this->Objects.get(), *this->icons.get());
+
+
   this->selection.reset();
   this->Objects->foreach ([](GameObject *obj) {
     delete obj;
