@@ -10,7 +10,7 @@ GameObject::GameObject(Vector2 pos, Texture *textureRef, string &textPath,
 
   this->rotation = 0;
   this->scale = {0, 0};
-  this->collider.reset();
+  // this->collider.reset();
   this->texture_path = textPath;
   this->UID = UIDGenerator::GetNewUid();
   this->type = OBJECT;

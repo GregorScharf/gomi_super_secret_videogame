@@ -14,7 +14,7 @@ public:
   Rectangle matrix;
   Vector2 scale;
   f32 rotation;
-  boost::optional<Collider> collider;
+  Collider collider;
   string texture_path;
   Texture *texture;
   u64 UID;

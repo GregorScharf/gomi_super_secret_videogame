@@ -1,4 +1,5 @@
 #include "../include/Selection.hpp"
+#include "Icons.hpp"
 #include <raylib.h>
 
 Selection::Selection(shared_ptr<GameObjectContainer> GOR,
@@ -47,33 +48,47 @@ void Selection::update(bool IconsSeletable) {
     });
   }
 
-  if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && Selected && isSelected) {
-    Vector2 Mouse = GetMousePosition();
-    Rectangle WindowRec = {0, 0, (f32)GetScreenWidth(), (f32)GetScreenHeight()};
-    switch (Selected->type) {
-    case ICON:
-      if (!CheckCollisionPointRec(Mouse, selectionWindow) &&
-          CheckCollisionPointRec(Mouse, WindowRec)) {
-        TextureIcon *p = (TextureIcon *)Selected->ptr;
-        auto pt = GameObjectsRef->add_new(p, camera, currentLayer);
-        auto node = Objects.append(pt);
-        node->data->type = OBJECT;
-        pt->ptr = pt;
-        pt->key = node;
-        isSelected = false;
-        Selected->ptr = nullptr;
-        Selected->key = nullptr;
-      }
-      break;
-    case OBJECT:
+  if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && Selected && isSelected) {
+      Vector2 Mouse = GetMousePosition();
+      Rectangle WindowRec = {0, 0, (f32)GetScreenWidth(),
+                             (f32)GetScreenHeight()};
+      switch (Selected->type) {
+      case ICON:
+        if (!CheckCollisionPointRec(Mouse, selectionWindow) &&
+            CheckCollisionPointRec(Mouse, WindowRec)) {
+          TextureIcon *p = (TextureIcon *)Selected->ptr;
+          auto pt = GameObjectsRef->add_new(p, camera, currentLayer);
+          auto node = Objects.append(pt);
+          node->data->type = OBJECT;
+          pt->ptr = pt;
+          pt->key = node;
+          isSelected = false;
+          Selected->ptr = nullptr;
+          Selected->key = nullptr;
+        }
+        break;
+      case OBJECT:
 
-      break;
+        break;
+      }
+    } else {
+      isSelected = false;
+      Selected->key = nullptr;
+      Selected->ptr = nullptr;
     }
   }
 }
 
 void Selection::draw() {
-  DrawRectangleRec(selectionWindow, Color{140, 140, 140, 255});
+  if (isSelected && Selected) {
+    if (Selected->type == ICON) {
+      auto p = (TextureIcon *)Selected->ptr;
+      Vector2 mouse = GetMousePosition();
+
+      DrawTextureEx(p->texture, mouse, 0, 0.4, Color{100, 200, 255, 100});
+    }
+  }
 }
 
 Selection::~Selection() { delete Selected; }

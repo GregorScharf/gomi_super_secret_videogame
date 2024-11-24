@@ -19,8 +19,6 @@ class Selection {
   bool isSelected;
   Camera2D *camera;
 
-  ObjectInspector inspector;
-
   shared_ptr<GameObjectContainer> GameObjectsRef;
   shared_ptr<IconContainer> IconsRef;
 

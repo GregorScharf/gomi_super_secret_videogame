@@ -13,9 +13,9 @@ bool endswith(string s, const char *end) {
 
 Rectangle RecWorldToScreen(Rectangle *rec, Camera2D *camera) {
   Vector2 tmp = GetWorldToScreen2D({rec->x, rec->y}, *camera);
-  return {tmp.x, tmp.y, rec->width, rec->height};
+  return {tmp.x, tmp.y, rec->width * camera->zoom, rec->height * camera->zoom};
 }
 Rectangle RecScreenToWorld(Rectangle *rec, Camera2D *camera) {
   Vector2 tmp = GetScreenToWorld2D({rec->x, rec->y}, *camera);
-  return {tmp.x, tmp.y, rec->width, rec->height};
+  return {tmp.x, tmp.y, rec->width * camera->zoom, rec->height * camera->zoom};
 }

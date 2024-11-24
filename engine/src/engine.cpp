@@ -1,4 +1,5 @@
 #include "../include/engine.hpp"
+#include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "ObjectInspector.hpp"
 #include "ShaderIcon.hpp"
@@ -27,7 +28,7 @@ EngineState::EngineState() {
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
-  inspector = make_unique<ObjectInspector>();
+  inspector = make_unique<ObjectInspector>(&selection->selectionWindow);
 
   i32 left_offset_tx = 0;
   i32 left_offset_sh = 0;
@@ -104,19 +105,32 @@ void EngineState::loop() {
       SceneCam.target.y -= GetMouseDelta().y;
     }
 
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+      Vector2 mouse = GetMousePosition();
+      Objects->foreach ([this, mouse](GameObject *obj) {
+        Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
+        if (CheckCollisionPointRec(mouse, r)) {
+          inspector->fill(obj);
+        }
+      });
+    }
+
     Bar.update();
+    inspector->update();
 
     BeginDrawing();
     ClearBackground(BLACK);
 
-    selection->draw();
     Objects->draw(&SceneCam);
+    DrawRectangleRec(selection->selectionWindow, Color{140, 140, 140, 255});
     if (Bar.icons->IsOpen) {
       icons->draw(&Bar.barFrame);
     }
     if (Bar.shaders->IsOpen) {
       ShaderIcons->draw(&Bar.barFrame);
     }
+    inspector->draw(&selection->selectionWindow);
+    selection->draw();
     Bar.draw();
     EndDrawing();
   }

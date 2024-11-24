@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObjects.hpp"
+#include "TextInputWindows.hpp"
 #include "containers.hpp"
 #include "types.hpp"
 #include <raylib.h>
@@ -9,8 +10,10 @@ class ObjectInspector {
   GameObject *SelectedObject;
   shared_ptr<GameObjectContainer> GameObjects;
 
+  TextInputWindow ScaleInput, PositionInput, RotationInput;
+
 public:
-  ObjectInspector();
+  ObjectInspector(Rectangle *selectionWindow);
   void fill(GameObject *obj);
   void clear();
 
