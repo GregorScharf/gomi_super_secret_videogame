@@ -89,6 +89,8 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
   DrawRectanglePro(box, {0}, 0, Color{140, 140, 140, 255});
   DrawRectangleLinesEx(box, 2, BLACK);
 
+  // gonna need a way to make this more interactable but im still thinking
+  // of a smarter way to do that
   if (SelectedObject) {
     DrawTextEx(Fonts::Carlito, "Position:", {box.x + 50, box.y + 10}, 18, 1,
                BLACK);

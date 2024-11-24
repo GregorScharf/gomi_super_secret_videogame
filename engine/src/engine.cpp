@@ -216,7 +216,6 @@ void EngineState::loop() {
     BeginDrawing();
     ClearBackground(BLACK);
 
-    selection->draw();
     Objects->draw(&SceneCam);
     dragger->draw();
     DrawRectangleRec(selection->selectionWindow, Color{140, 140, 140, 255});

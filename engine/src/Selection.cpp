@@ -110,7 +110,14 @@ void Selection::draw() {
 }
 
 void Selection::draw() {
-  DrawRectangleRec(selectionWindow, Color{140, 140, 140, 255});
+  if (isSelected && Selected) {
+    if (Selected->type == ICON) {
+      auto p = (TextureIcon *)Selected->ptr;
+      Vector2 mouse = GetMousePosition();
+
+      DrawTextureEx(p->texture, mouse, 0, 0.4, Color{100, 200, 255, 100});
+    }
+  }
 }
 
 Selection::~Selection() { delete Selected; }
