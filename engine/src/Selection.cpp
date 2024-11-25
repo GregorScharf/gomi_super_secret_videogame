@@ -51,6 +51,32 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
             break;
           }
         });
+    Objects.foreach ([this, Mouse, IconsSeletable](Selectable *object) {
+      switch (object->type) {
+      case ICON:
+        if (IconsSeletable) {
+          if (CheckCollisionPointRec(Mouse,
+                                     ((TextureIcon *)object->ptr)->scale)) {
+            this->Selected->ptr = (Selectable *)object->ptr;
+            this->Selected->type = ICON;
+            this->isSelected = true;
+          }
+        }
+        break;
+      case OBJECT: {
+        GameObject *p = (GameObject *)object->ptr;
+        Vector2 screen =
+            GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
+
+        if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
+                                           p->matrix.height})) {
+        }
+        break;
+      }
+      default:
+        break;
+      }
+    });
   }
 
   if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -115,7 +141,13 @@ void Selection::draw() {
       auto p = (TextureIcon *)Selected->ptr;
       Vector2 mouse = GetMousePosition();
 
-      DrawTextureEx(p->texture, mouse, 0, 0.4, Color{100, 200, 255, 100});
+      DrawTexturePro(p->texture,
+                     {0, 0, (f32)p->texture.width, (f32)p->texture.height},
+                     {mouse.x, mouse.y, p->texture.width * (f32)0.4,
+                      p->texture.height * (f32)0.4},
+                     {(f32)p->texture.width * (f32)0.4 / 2,
+                      (f32)p->texture.height * (f32)0.4 / 2},
+                     0, Color{100, 200, 255, 100});
     }
   }
 }

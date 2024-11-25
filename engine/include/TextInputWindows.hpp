@@ -13,6 +13,16 @@ typedef enum INPUT_TYPES {
   NO_TYPE = 4 // default, set to something else after construction
 } INPUT_TYPES;
 
+// update: i hate you raysan
+
+typedef enum INPUT_TYPES {
+  STRING = 0,
+  INTEGER = 1,
+  UNSIGNED_INT = 2,
+  FLOAT = 3,
+  NO_TYPE = 4 // default, set to something else after construction
+} INPUT_TYPES;
+
 class TextInputWindow {
   string text;
   Rectangle matrix;

@@ -51,6 +51,7 @@ EngineState::EngineState() {
   SceneCam.target = {
       (f32)(GetScreenWidth() - selection->selectionWindow.width) / 2,
       (f32)(GetScreenHeight() - INSPECTOR_HEIGHT) / 2};
+  SceneCam.target = {(f32)(GetScreenWidth()-selection->selectionWindow.width) / 2, (f32)(GetScreenHeight() - INSPECTOR_HEIGHT)/ 2};
   SceneCam.offset = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
   SceneCam.rotation = 0;
   SceneCam.zoom = 1;
@@ -81,9 +82,6 @@ EngineState::EngineState() {
         TextureIcon *icon =
             icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
                            top_offset_tx * (BOX_WIDTH / 2));
-        TextureIcon *icon =
-            icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
-                           top_offset_tx * BOX_WIDTH);
         selection->new_object<TextureIcon>(icon, ICON);
         left_offset_tx++;
         if (left_offset_tx * BOX_WIDTH >= BOX_WIDTH * 2) {
@@ -184,26 +182,14 @@ void EngineState::loop() {
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       Vector2 mouse = GetMousePosition();
-      if (CheckCollisionPointRec(mouse,
-                                 {selection->selectionWindow.width, 0,
-                                  GetScreenWidth() - selectionWindow.width,
-                                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT})) {
-        inspector->clear();
-        bool one_selected = false;
-        Objects->foreach ([this, mouse, &one_selected](GameObject *obj) {
-          Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
+      Objects->foreach ([this, mouse](GameObject *obj) {
+        Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
 
-          r.x -= r.width / 2;
-          r.y -= r.height / 2;
-          if (CheckCollisionPointRec(mouse, r)) {
-            inspector->fill(obj);
-            dragger->fill(obj);
-            one_selected = true;
-          }
-        });
-        if (!one_selected) {
-          dragger->clear();
-          inspector->clear();
+        r.x -= r.width / 2;
+        r.y -= r.height / 2;
+
+        if (CheckCollisionPointRec(mouse, r)) {
+          inspector->fill(obj);
         }
       }
       if (Bar.Layers->IsOpen) {
