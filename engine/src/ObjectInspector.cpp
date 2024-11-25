@@ -1,28 +1,55 @@
 #include "../include/ObjectInspector.hpp"
 #include <raylib.h>
 #include <string>
-
-#define INSPECTOR_HEIGHT 400
-#define INSPECTOR_WIDTH_IS_FULL 1
-
 ObjectInspector::ObjectInspector(Rectangle *selectionWindow) {
   this->SelectedObject = nullptr;
-  this->PositionInput.set_matrix(
+  this->PositionInputx.set_matrix(
       {selectionWindow->width + 200,
-       (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 256, 28});
-  this->ScaleInput.set_matrix({selectionWindow->width + 200,
-                               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 50,
-                               256, 28});
+       (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 128, 28});
+  this->PositionInputy.set_matrix(
+      {selectionWindow->width + 328,
+       (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 128, 28});
+  this->ScaleInputx.set_matrix({selectionWindow->width + 200,
+                                (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 50,
+                                128, 28});
+  this->ScaleInputy.set_matrix({selectionWindow->width + 328,
+                                (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 50,
+                                128, 28});
   this->RotationInput.set_matrix(
       {selectionWindow->width + 200,
-       (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 90, 256, 28});
+       (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 90, 128, 28});
+  RotationInput.input_type = FLOAT;
+  ScaleInputx.input_type = FLOAT;
+  ScaleInputy.input_type = FLOAT;
+  PositionInputx.input_type = FLOAT;
+  PositionInputy.input_type = FLOAT;
 }
 
 void ObjectInspector::update() {
   Vector2 mouse = GetMousePosition();
-  ScaleInput.update(mouse);
+  ScaleInputx.update(mouse);
+  ScaleInputy.update(mouse);
   RotationInput.update(mouse);
-  PositionInput.update(mouse);
+  PositionInputx.update(mouse);
+  PositionInputy.update(mouse);
+
+  if (SelectedObject) {
+    if (ScaleInputx.can_callback()) {
+      SelectedObject->matrix.width = std::stof(ScaleInputx.callback());
+    }
+    if (ScaleInputy.can_callback()) {
+      SelectedObject->matrix.height = std::stof(ScaleInputy.callback());
+    }
+    if (RotationInput.can_callback()) {
+      SelectedObject->rotation = std::stof(RotationInput.callback());
+    }
+    if (PositionInputx.can_callback()) {
+      SelectedObject->matrix.x = std::stof(PositionInputx.callback());
+    }
+    if (PositionInputy.can_callback()) {
+      SelectedObject->matrix.y = std::stof(PositionInputy.callback());
+    }
+  }
 }
 
 void ObjectInspector::fill(GameObject *obj) { SelectedObject = obj; }
@@ -43,22 +70,30 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
   // of a smarter way to do that
   if (SelectedObject) {
     DrawText("Position:", box.x + 50, box.y + 10, FONTSIZE, BLACK);
-    PositionInput.setText(std::to_string(SelectedObject->matrix.x) +
-                          std::to_string(SelectedObject->matrix.y));
-    PositionInput.draw();
+
+    if (!PositionInputx.IsSelected) {
+      PositionInputx.setText(std::to_string(SelectedObject->matrix.x));
+    }
+    PositionInputx.draw();
+    if (!PositionInputy.IsSelected) {
+      PositionInputy.setText(std::to_string(SelectedObject->matrix.y));
+    }
+    PositionInputy.draw();
 
     DrawText("Scale:", box.x + 50, box.y + 50, FONTSIZE, BLACK);
-    ScaleInput.setText(std::to_string(SelectedObject->matrix.width) +
-                       std::to_string(SelectedObject->matrix.height));
-    ScaleInput.draw();
+    if (!ScaleInputx.IsSelected) {
+      ScaleInputx.setText(std::to_string(SelectedObject->matrix.width));
+    }
+    ScaleInputx.draw();
+
+    if (!ScaleInputy.IsSelected) {
+      ScaleInputy.setText(std::to_string(SelectedObject->matrix.height));
+    }
+    ScaleInputy.draw();
     DrawText("Rotation: ", box.x + 50, box.y + 90, FONTSIZE, BLACK);
-    RotationInput.setText(std::to_string(SelectedObject->rotation));
+    if (!RotationInput.IsSelected) {
+      RotationInput.setText(std::to_string(SelectedObject->rotation));
+    }
     RotationInput.draw();
-
-    DrawText("", box.x + 50, box.y + 100, FONTSIZE, BLACK);
-
-    /*
-    DrawText(, , , FONTSIZE, BLACK);
-    */
   }
 }

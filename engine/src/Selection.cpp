@@ -18,11 +18,9 @@ void Selection::update(bool IconsSeletable) {
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isSelected) {
     Vector2 Mouse = GetMousePosition();
 
-    cout << Mouse.x << "  " << Mouse.y << endl;
     Objects.foreach ([this, Mouse, IconsSeletable](Selectable *object) {
       switch (object->type) {
       case ICON:
-        cout << "ICON\n";
         if (IconsSeletable) {
           if (CheckCollisionPointRec(Mouse,
                                      ((TextureIcon *)object->ptr)->scale)) {
@@ -33,12 +31,9 @@ void Selection::update(bool IconsSeletable) {
         }
         break;
       case OBJECT:
-        cout << "OBJECT\n";
         GameObject *p = (GameObject *)object->ptr;
         Vector2 screen =
             GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
-        cout << screen.x << "  " << screen.y << "  " << p->matrix.width << "  "
-             << p->matrix.height << endl;
 
         if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
                                            p->matrix.height})) {
@@ -86,7 +81,13 @@ void Selection::draw() {
       auto p = (TextureIcon *)Selected->ptr;
       Vector2 mouse = GetMousePosition();
 
-      DrawTextureEx(p->texture, mouse, 0, 0.4, Color{100, 200, 255, 100});
+      DrawTexturePro(p->texture,
+                     {0, 0, (f32)p->texture.width, (f32)p->texture.height},
+                     {mouse.x, mouse.y, p->texture.width * (f32)0.4,
+                      p->texture.height * (f32)0.4},
+                     {(f32)p->texture.width * (f32)0.4 / 2,
+                      (f32)p->texture.height * (f32)0.4 / 2},
+                     0, Color{100, 200, 255, 100});
     }
   }
 }

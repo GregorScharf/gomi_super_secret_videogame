@@ -53,7 +53,8 @@ void GameObjectContainer::draw(Camera2D *camera) {
       DrawTexturePro(
           *obj->texture,
           {0, 0, (f32)obj->texture->width, (f32)obj->texture->height},
-          drawMatrix, {0, 0}, obj->rotation, RAYWHITE);
+          drawMatrix, {drawMatrix.width / 2, drawMatrix.height / 2},
+          obj->rotation, RAYWHITE);
     });
   }
 }

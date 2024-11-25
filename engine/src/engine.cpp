@@ -36,7 +36,7 @@ EngineState::EngineState() {
   i32 top_offset_tx = 0;
   i32 top_offset_sh = 0;
 
-  SceneCam.target = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
+  SceneCam.target = {(f32)(GetScreenWidth()-selection->selectionWindow.width) / 2, (f32)(GetScreenHeight() - INSPECTOR_HEIGHT)/ 2};
   SceneCam.offset = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
   SceneCam.rotation = 0;
   SceneCam.zoom = 1;
@@ -56,7 +56,7 @@ EngineState::EngineState() {
       if (endswith(entry.path(), ".png")) {
         TextureIcon *icon =
             icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
-                           top_offset_tx * BOX_WIDTH);
+                           top_offset_tx * (BOX_WIDTH / 2));
         selection->new_object<TextureIcon>(icon, ICON);
         left_offset_tx++;
         if (left_offset_tx * BOX_WIDTH >= BOX_WIDTH * 2) {
@@ -109,6 +109,10 @@ void EngineState::loop() {
       Vector2 mouse = GetMousePosition();
       Objects->foreach ([this, mouse](GameObject *obj) {
         Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
+
+        r.x -= r.width / 2;
+        r.y -= r.height / 2;
+
         if (CheckCollisionPointRec(mouse, r)) {
           inspector->fill(obj);
         }

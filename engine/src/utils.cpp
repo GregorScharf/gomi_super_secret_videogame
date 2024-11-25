@@ -19,3 +19,41 @@ Rectangle RecScreenToWorld(Rectangle *rec, Camera2D *camera) {
   Vector2 tmp = GetScreenToWorld2D({rec->x, rec->y}, *camera);
   return {tmp.x, tmp.y, rec->width * camera->zoom, rec->height * camera->zoom};
 }
+
+bool is_int(string &s) {
+  bool minus = false;
+  for (char c : s) {
+    if (c < 48 || c > 57) {
+      if (c != '-' || minus) {
+        return false;
+      } else {
+        minus = true;
+      }
+    }
+  }
+  return true;
+}
+
+// hehe haha
+bool is_uint(string &s) {
+  for (char c : s) {
+    if (c < 48 || c > 57) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool is_float(string &s) {
+  bool dot = false;
+  for (char c : s) {
+    if (c < 48 || c > 57) {
+      if (c != '.' || dot) {
+        return false;
+      } else {
+        dot = true;
+      }
+    }
+  }
+  return true;
+}
