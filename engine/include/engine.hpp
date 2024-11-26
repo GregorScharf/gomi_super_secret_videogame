@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObjects.hpp"
 #include "Icons.hpp"
+#include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "Selection.hpp"
 #include "containers.hpp"
@@ -22,6 +23,7 @@ class EngineState {
   Camera2D UICam;
   WindowBar Bar;
   unique_ptr<ObjectInspector> inspector;
+  unique_ptr<Dragger> dragger;
 
 public:
   EngineState();

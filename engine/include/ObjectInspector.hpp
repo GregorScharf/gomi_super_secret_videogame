@@ -8,7 +8,6 @@
 #define INSPECTOR_HEIGHT 400
 #define INSPECTOR_WIDTH_IS_FULL 1
 
-
 // subclass of the selection
 class ObjectInspector {
   GameObject *SelectedObject;

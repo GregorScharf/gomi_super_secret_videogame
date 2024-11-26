@@ -1,5 +1,7 @@
 #include "../include/Selection.hpp"
 #include "Icons.hpp"
+#include "selectable.hpp"
+#include "utils.hpp"
 #include <raylib.h>
 
 Selection::Selection(shared_ptr<GameObjectContainer> GOR,
@@ -31,13 +33,6 @@ void Selection::update(bool IconsSeletable) {
         }
         break;
       case OBJECT:
-        GameObject *p = (GameObject *)object->ptr;
-        Vector2 screen =
-            GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
-
-        if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
-                                           p->matrix.height})) {
-        }
         break;
       }
     });
@@ -64,7 +59,6 @@ void Selection::update(bool IconsSeletable) {
         }
         break;
       case OBJECT:
-
         break;
       }
     } else {

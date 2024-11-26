@@ -1,9 +1,11 @@
 #include "../include/engine.hpp"
 #include "GameObjects.hpp"
 #include "Icons.hpp"
+#include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "ShaderIcon.hpp"
 #include "utils.hpp"
+#include <memory>
 #include <raylib.h>
 
 EngineState::EngineState() {
@@ -36,10 +38,14 @@ EngineState::EngineState() {
   i32 top_offset_tx = 0;
   i32 top_offset_sh = 0;
 
-  SceneCam.target = {(f32)(GetScreenWidth()-selection->selectionWindow.width) / 2, (f32)(GetScreenHeight() - INSPECTOR_HEIGHT)/ 2};
+  SceneCam.target = {
+      (f32)(GetScreenWidth() - selection->selectionWindow.width) / 2,
+      (f32)(GetScreenHeight() - INSPECTOR_HEIGHT) / 2};
   SceneCam.offset = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
   SceneCam.rotation = 0;
   SceneCam.zoom = 1;
+
+  dragger = make_unique<Dragger>(&SceneCam);
 
   UICam.zoom = 1;     // this should never change, i hope
   UICam.rotation = 0; // same goes for here
@@ -95,6 +101,8 @@ void EngineState::loop() {
 
   while (!WindowShouldClose()) {
 
+    dragger->update();
+
     selection->update(Bar.icons->IsOpen);
     if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998) {
       SceneCam.zoom += (f32)GetMouseWheelMove() * 0.02;
@@ -107,16 +115,23 @@ void EngineState::loop() {
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       Vector2 mouse = GetMousePosition();
-      Objects->foreach ([this, mouse](GameObject *obj) {
-        Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
+      if (CheckCollisionPointRec(mouse,
+                                 {selection->selectionWindow.width, 0,
+                                  GetScreenWidth() - selectionWindow.width,
+                                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT})) {
+        inspector->clear();
+        Objects->foreach ([this, mouse](GameObject *obj) {
+          Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
 
-        r.x -= r.width / 2;
-        r.y -= r.height / 2;
+          r.x -= r.width / 2;
+          r.y -= r.height / 2;
 
-        if (CheckCollisionPointRec(mouse, r)) {
-          inspector->fill(obj);
-        }
-      });
+          if (CheckCollisionPointRec(mouse, r)) {
+            inspector->fill(obj);
+            dragger->fill(obj);
+          }
+        });
+      }
     }
 
     Bar.update();
@@ -126,6 +141,7 @@ void EngineState::loop() {
     ClearBackground(BLACK);
 
     Objects->draw(&SceneCam);
+    dragger->draw();
     DrawRectangleRec(selection->selectionWindow, Color{140, 140, 140, 255});
     if (Bar.icons->IsOpen) {
       icons->draw(&Bar.barFrame);
