@@ -9,9 +9,6 @@
 #define INSPECTOR_HEIGHT 400
 #define INSPECTOR_WIDTH_IS_FULL 1
 
-#define INSPECTOR_HEIGHT 400
-#define INSPECTOR_WIDTH_IS_FULL 1
-
 class ObjectInspector {
   shared_ptr<GameObjectContainer> GameObjects;
 

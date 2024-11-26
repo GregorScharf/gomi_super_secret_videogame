@@ -2,6 +2,7 @@
 #include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "ObjectDragging.hpp"
+#include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "Selection.hpp"
 #include "containers.hpp"

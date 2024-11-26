@@ -182,11 +182,16 @@ void EngineState::loop() {
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
       Vector2 mouse = GetMousePosition();
-      Objects->foreach ([this, mouse](GameObject *obj) {
-        Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
+      if (CheckCollisionPointRec(mouse,
+                                 {selection->selectionWindow.width, 0,
+                                  GetScreenWidth() - selectionWindow.width,
+                                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT})) {
+        inspector->clear();
+        Objects->foreach ([this, mouse](GameObject *obj) {
+          Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
 
-        r.x -= r.width / 2;
-        r.y -= r.height / 2;
+          r.x -= r.width / 2;
+          r.y -= r.height / 2;
 
         if (CheckCollisionPointRec(mouse, r)) {
           inspector->fill(obj);
