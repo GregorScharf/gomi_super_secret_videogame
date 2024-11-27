@@ -20,7 +20,7 @@ public:
   Texture *texture;
   ShaderObject *shader;
   u64 UID;
-  u8 LayerID;
+  u8 layer_id;
   node<GameObject *> *ObjectListKey;
 
   GameObject(Vector2 pos, Texture *textureRef, string &textPath, u8 Layer);
