@@ -48,7 +48,7 @@ void ShaderButton::draw() {
 }
 
 WindowBar::WindowBar() {
-  barFrame = {0, 0, (f32)GetScreenWidth(), 21};
+  barFrame = {0, 0, (f32)GetScreenWidth(), MENU_BUTTON_HEIGHT};
   icons = make_unique<IconButton>();
   shaders = make_unique<ShaderButton>();
   files = make_unique<FileButton>();
@@ -67,16 +67,26 @@ void WindowBar::update() {
     if (CheckCollisionPointRec(mouse, icons->box)) {
       icons->onClick();
       shaders->IsOpen = false;
+      Layers->IsOpen = false;
+      files->IsOpen = false;
     }
     if (CheckCollisionPointRec(mouse, shaders->box)) {
       shaders->onClick();
       icons->IsOpen = false;
+      Layers->IsOpen = false;
+      files->IsOpen = false;
     }
     if (CheckCollisionPointRec(mouse, files->box)) {
       files->onClick();
+      Layers->IsOpen = false;
+      shaders->IsOpen = false;
+      Layers->IsOpen = false;
     }
     if (CheckCollisionPointRec(mouse, Layers->box)) {
       Layers->onClick();
+      icons->IsOpen = false;
+      shaders->IsOpen = false;
+      files->IsOpen = false;
     }
   }
 }
@@ -126,3 +136,5 @@ void LayerButton::construct() {
   text = "Layers";
   IsOpen = false;
 }
+
+void LayerButton::getLayerRef(u8 *ref) { SelectedLayer = ref; }

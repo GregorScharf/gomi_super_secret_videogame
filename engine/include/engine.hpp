@@ -17,6 +17,7 @@ class EngineState {
   shared_ptr<GameObjectContainer> Objects;
   shared_ptr<IconContainer> icons;
   shared_ptr<ShaderIconContainer> ShaderIcons;
+  shared_ptr<LayerContainer> LayerIcons;
   unique_ptr<Selection> selection;
   Rectangle selectionWindow;
   Camera2D SceneCam;

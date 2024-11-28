@@ -34,6 +34,9 @@ void Selection::update(bool IconsSeletable) {
         break;
       case OBJECT:
         break;
+      case SHADERICON:
+        // TODO: this
+        break;
       }
     });
   }
@@ -48,7 +51,7 @@ void Selection::update(bool IconsSeletable) {
         if (!CheckCollisionPointRec(Mouse, selectionWindow) &&
             CheckCollisionPointRec(Mouse, WindowRec)) {
           TextureIcon *p = (TextureIcon *)Selected->ptr;
-          auto pt = GameObjectsRef->add_new(p, camera, currentLayer);
+          auto pt = GameObjectsRef->add_new(p, camera, *currentLayer);
           auto node = Objects.append(pt);
           node->data->type = OBJECT;
           pt->ptr = pt;

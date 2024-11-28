@@ -22,7 +22,7 @@ void ShaderIcon::draw(Rectangle *barFrame) {
   // this is kind of a hack but ehhh
   i32 charsPerLine = scale.width / fontsize;
   charsPerLine--;
-  Rectangle dest = {scale.x, scale.y + (barFrame->height * 2),
+  Rectangle dest = {scale.x, scale.y + (barFrame->height),
                     f32((BOX_WIDTH)-BorderThickness),
                     f32((scale.height) - 2 * BorderThickness)};
 

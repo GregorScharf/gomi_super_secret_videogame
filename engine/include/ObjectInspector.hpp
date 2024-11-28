@@ -14,7 +14,9 @@ class ObjectInspector {
   shared_ptr<GameObjectContainer> GameObjects;
 
   TextInputWindow ScaleInputx, ScaleInputy, PositionInputx, PositionInputy,
-      RotationInput;
+      RotationInput, ShaderInput;
+
+  Rectangle shaderBox, clearShaders;
 
 public:
   ObjectInspector(Rectangle *selectionWindow);

@@ -4,6 +4,7 @@
 #include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "ShaderIcon.hpp"
+#include "containers.hpp"
 #include "utils.hpp"
 #include <memory>
 #include <raylib.h>
@@ -27,6 +28,7 @@ EngineState::EngineState() {
   Objects = make_shared<GameObjectContainer>();
   icons = make_shared<IconContainer>();
   ShaderIcons = make_shared<ShaderIconContainer>();
+  LayerIcons = make_shared<LayerContainer>(&Bar.barFrame, Objects);
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
@@ -55,6 +57,10 @@ EngineState::EngineState() {
                   (f32)GetScreenHeight() / 2 + Bar.barFrame.height / 2};
 
   SetTargetFPS(60);
+
+  Objects->currentLayer = &LayerIcons->currentLayer;
+  selection->currentLayer = &LayerIcons->currentLayer;
+  Bar.Layers->SelectedLayer = &LayerIcons->currentLayer;
 
   // sweet mother of jesus
   for (const auto &entry : fs::directory_iterator(path)) {
@@ -104,13 +110,14 @@ void EngineState::loop() {
     dragger->update();
 
     selection->update(Bar.icons->IsOpen);
-    if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998) {
+    if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998 &&
+        SceneCam.zoom + GetMouseWheelMove() * 0.02 < 10) {
       SceneCam.zoom += (f32)GetMouseWheelMove() * 0.02;
     }
 
     if (IsMouseButtonDown(MOUSE_MIDDLE_BUTTON)) {
-      SceneCam.target.x -= GetMouseDelta().x;
-      SceneCam.target.y -= GetMouseDelta().y;
+      SceneCam.target.x -= GetMouseDelta().x * 1 / SceneCam.zoom;
+      SceneCam.target.y -= GetMouseDelta().y * 1 / SceneCam.zoom;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -120,22 +127,30 @@ void EngineState::loop() {
                                   GetScreenWidth() - selectionWindow.width,
                                   (f32)GetScreenHeight() - INSPECTOR_HEIGHT})) {
         inspector->clear();
-        Objects->foreach ([this, mouse](GameObject *obj) {
+        bool one_selected = false;
+        Objects->foreach ([this, mouse, &one_selected](GameObject *obj) {
           Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
 
           r.x -= r.width / 2;
           r.y -= r.height / 2;
-
           if (CheckCollisionPointRec(mouse, r)) {
             inspector->fill(obj);
             dragger->fill(obj);
+            one_selected = true;
           }
         });
+        if (!one_selected) {
+          dragger->clear();
+          inspector->clear();
+        }
+      }
+      if (Bar.Layers->IsOpen) {
       }
     }
 
     Bar.update();
     inspector->update();
+    LayerIcons->update();
 
     BeginDrawing();
     ClearBackground(BLACK);
@@ -148,6 +163,9 @@ void EngineState::loop() {
     }
     if (Bar.shaders->IsOpen) {
       ShaderIcons->draw(&Bar.barFrame);
+    }
+    if (Bar.Layers->IsOpen) {
+      LayerIcons->draw();
     }
     inspector->draw(&selection->selectionWindow);
     selection->draw();

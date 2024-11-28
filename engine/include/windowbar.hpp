@@ -41,8 +41,10 @@ public:
 };
 class LayerButton : public Button {
 public:
+  u8 *SelectedLayer;
   bool IsOpen;
   void construct() override;
+  void getLayerRef(u8 *ref);
   void onClick() override;
   void draw() override;
 };

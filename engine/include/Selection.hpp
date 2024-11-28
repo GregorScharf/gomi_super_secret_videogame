@@ -25,7 +25,7 @@ class Selection {
 public:
   Rectangle selectionWindow;
 
-  u8 currentLayer;
+  u8 *currentLayer;
   Selection(shared_ptr<GameObjectContainer> GOR, shared_ptr<IconContainer> IR,
             Camera2D *cameraRef);
   ~Selection();

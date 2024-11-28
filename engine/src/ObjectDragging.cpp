@@ -8,18 +8,44 @@ void Dragger::fill(GameObject *new_obj) { Selected = new_obj; }
 void Dragger::clear() { Selected = nullptr; }
 
 void Dragger::update() {
-  if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && Selected) {
-    clear();
-  }
   if (Selected) {
-    last_frame_pos = GetMousePosition();
-  }
-  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && Selected) {
+  f32 inverse_zoom = 1 / Camera->zoom;
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 
-    Selected->matrix.x += GetMouseDelta().x * (1 / Camera->zoom);
-    Selected->matrix.y += GetMouseDelta().y * (1 / Camera->zoom);
+      Selected->matrix.x += GetMouseDelta().x * inverse_zoom;
+      Selected->matrix.y += GetMouseDelta().y * inverse_zoom;
+    }
 
-    cout << Camera->zoom << endl;
+    f32 *p = &Selected->matrix.x;
+
+    if (IsKeyDown(KEY_LEFT_SHIFT)) {
+      p += 2;
+    }
+
+    if (IsKeyPressedRepeat(KEY_W) || IsKeyPressedRepeat(KEY_UP)) {
+      *(p + 1) -= inverse_zoom;
+    }
+    if (IsKeyPressedRepeat(KEY_A) || IsKeyPressedRepeat(KEY_LEFT)) {
+      *p -= inverse_zoom;
+    }
+    if (IsKeyPressedRepeat(KEY_S) || IsKeyPressedRepeat(KEY_DOWN)) {
+      *(p + 1) += inverse_zoom;
+    }
+    if (IsKeyPressedRepeat(KEY_D) || IsKeyPressedRepeat(KEY_RIGHT)) {
+      *p += inverse_zoom;
+    }
+    if (IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP)) {
+      *(p + 1) -= inverse_zoom;
+    }
+    if (IsKeyPressed(KEY_A) || IsKeyPressed(KEY_LEFT)) {
+      *p -= inverse_zoom;
+    }
+    if (IsKeyPressed(KEY_S) || IsKeyPressed(KEY_DOWN)) {
+      *(p + 1) += inverse_zoom;
+    }
+    if (IsKeyPressed(KEY_D) || IsKeyPressed(KEY_RIGHT)) {
+      *p += inverse_zoom;
+    }
   }
 }
 

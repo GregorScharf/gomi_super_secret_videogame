@@ -23,6 +23,12 @@ ObjectInspector::ObjectInspector(Rectangle *selectionWindow) {
   ScaleInputy.input_type = FLOAT;
   PositionInputx.input_type = FLOAT;
   PositionInputy.input_type = FLOAT;
+  ShaderInput.input_type = STRING;
+
+  shaderBox = {selectionWindow->width + 500,
+               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
+  clearShaders = {selectionWindow->width + 625,
+                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
 }
 
 void ObjectInspector::update() {
@@ -32,6 +38,7 @@ void ObjectInspector::update() {
   RotationInput.update(mouse);
   PositionInputx.update(mouse);
   PositionInputy.update(mouse);
+  ShaderInput.update(mouse);
 
   if (SelectedObject) {
     if (ScaleInputx.can_callback()) {
@@ -48,6 +55,8 @@ void ObjectInspector::update() {
     }
     if (PositionInputy.can_callback()) {
       SelectedObject->matrix.y = std::stof(PositionInputy.callback());
+    }
+    if (ShaderInput.can_callback()) {
     }
   }
 }
@@ -95,5 +104,7 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
       RotationInput.setText(std::to_string(SelectedObject->rotation));
     }
     RotationInput.draw();
+    DrawRectanglePro(shaderBox, {0, 0}, 0, Color{170, 170, 170, 255});
+    DrawRectanglePro(clearShaders, {0, 0}, 0, Color{170, 170, 170, 255});
   }
 }
