@@ -196,3 +196,59 @@ ShaderIcon *ShaderIconContainer::add_new(string path, i32 x, i32 y) {
   newIcon->make_ref(ref);
   return newIcon;
 }
+
+LayerContainer::LayerContainer(Rectangle *barFrame,
+                               shared_ptr<GameObjectContainer> GameObjects) {
+  this->GameObjectstRef = GameObjects;
+  this->LayerAmount = 1;
+  this->currentLayer = 0;
+  this->barFrameRef = barFrame;
+  this->Icons.append(new LayerIcon(currentLayer, barFrame));
+}
+
+void LayerContainer::draw() {
+  Icons.foreach ([this](LayerIcon *icon) {
+    if (icon->LayerIndex == currentLayer) {
+      DrawRectangleRec({0, icon->box.y, 2 * BOX_WIDTH, BOX_WIDTH / 4},
+                       Color{100, 200, 255, 200});
+    }
+    icon->draw();
+  });
+  DrawRectangleRounded(
+      {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20}, 2, 0,
+      Color{170, 170, 170, 255});
+  DrawRectangleRoundedLinesEx(
+      {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20}, 2, 0, 2,
+      BLACK);
+  DrawText("Add new Layer", barFrameRef->x + 305, barFrameRef->height + 21, 18,
+           BLACK);
+}
+
+void LayerContainer::add_new() {
+
+  // hard cap that shit
+  if (!(LayerAmount > 254)) {
+    Icons.append(new LayerIcon(LayerAmount, barFrameRef));
+    GameObjectstRef->Layers.push_back(new DLinkedList<GameObject *>());
+    LayerAmount++;
+  }
+}
+
+void LayerContainer::update() {
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    Vector2 mouse = GetMousePosition();
+    Icons.foreach ([this, mouse](LayerIcon *icon) {
+      if (CheckCollisionPointRec(mouse, icon->box)) {
+        if (!CheckCollisionPointRec(
+                mouse,
+                {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
+          currentLayer = icon->LayerIndex;
+        }
+      }
+    });
+    if (CheckCollisionPointRec(
+            mouse, {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
+      add_new();
+    }
+  }
+}

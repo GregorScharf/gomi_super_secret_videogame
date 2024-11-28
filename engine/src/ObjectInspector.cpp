@@ -27,11 +27,12 @@ ObjectInspector::ObjectInspector(
   ScaleInputy.input_type = FLOAT;
   PositionInputx.input_type = FLOAT;
   PositionInputy.input_type = FLOAT;
+  ShaderInput.input_type = STRING;
 
   shaderBox = {selectionWindow->width + 500,
-               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 200, 40};
-  clearShaders = {selectionWindow->width + 500,
-                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 100, 200, 40};
+               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
+  clearShaders = {selectionWindow->width + 625,
+                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
 }
 
 void ObjectInspector::update() {
@@ -41,6 +42,7 @@ void ObjectInspector::update() {
   RotationInput.update(mouse);
   PositionInputx.update(mouse);
   PositionInputy.update(mouse);
+  ShaderInput.update(mouse);
 
   if (SelectedObject) {
     if (ScaleInputx.can_callback()) {

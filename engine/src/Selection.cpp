@@ -75,6 +75,9 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
       }
       default:
         break;
+      case SHADERICON:
+        // TODO: this
+        break;
       }
     });
   }
