@@ -13,6 +13,7 @@ GameObject::GameObject(Vector2 pos, Texture *textureRef, string &textPath, u8 La
   // this->collider.reset();
   this->texture_path = textPath;
   this->UID = UIDGenerator::GetNewUid();
+  this->layer_id = Layer;
   this->type = OBJECT;
   this->shader = nullptr;
 }
