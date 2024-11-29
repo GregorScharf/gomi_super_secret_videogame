@@ -19,6 +19,7 @@ class TextInputWindow {
   bool callBackAvailable;
 
 public:
+  i32 max_input_length = 12; 
   bool IsSelected;
   INPUT_TYPES input_type;
   bool can_callback();

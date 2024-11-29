@@ -30,5 +30,5 @@ new version will be prebuilt on github
 Engine for building maps:
   Camera that accounts for the gameObjects i.e. scale, Position of newly placed objects (start at a scale of texture 1:1, 476:476),
 
-  Maybe just render everything and don't worry about overdrawing in the engine?
-  Figure out the file format for saving a scene
+  Figure out the file format for saving a scene --went with toml serialization
+  include scripting in engine? either through some self written c++ library or by embedding lua?

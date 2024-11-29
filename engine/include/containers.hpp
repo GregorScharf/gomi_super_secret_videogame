@@ -37,9 +37,14 @@ public:
 
 class ShaderIconContainer {
   DLinkedList<ShaderIcon *> Icons;
+  Rectangle *shaderAttributeBox;
 
 public:
   ShaderIcon *add_new(string path, i32 x, i32 y);
+
+  ShaderIconContainer(Rectangle *shaderBox);
+
+  void update();
 
   void foreach (std::function<void(ShaderIcon *)> func);
 
@@ -51,6 +56,7 @@ class LayerContainer {
   Rectangle *barFrameRef;
   u8 LayerAmount;
   shared_ptr<GameObjectContainer> GameObjectstRef;
+  LayerIcon *selected;
 
 public:
   u8 currentLayer;

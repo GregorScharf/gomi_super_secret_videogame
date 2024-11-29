@@ -41,7 +41,6 @@ void TextInputWindow::update(Vector2 mouse) {
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
     if (CheckCollisionPointRec(mouse, matrix)) {
       IsSelected = true;
-      text.clear();
 
     } else {
       IsSelected = false;
@@ -50,14 +49,38 @@ void TextInputWindow::update(Vector2 mouse) {
   if (IsSelected) {
     char key = GetCharPressed();
     while (key > 0) {
-      if (((key >= 48) && (key <= 57)) || key == 46) {
-        if (text.size() <= MAX_LETTERS_INPUT) {
+      switch (input_type) {
+      case STRING:
+        if (text.size() <= max_input_length) {
           text.push_back(key);
         }
+        break;
+      case INTEGER:
+        if (((key >= 48) && (key <= 57)) || key == 45) {
+          if (text.size() <= max_input_length) {
+            text.push_back(key);
+          }
+        }
+        break;
+      case UNSIGNED_INT:
+        if (((key >= 48) && (key <= 57))) {
+          if (text.size() <= max_input_length) {
+            text.push_back(key);
+          }
+        }
+        break;
+      case FLOAT:
+        if (((key >= 48) && (key <= 57)) || key == 46) {
+          if (text.size() <= max_input_length) {
+            text.push_back(key);
+          }
+        }
+        break;
       }
       key = GetCharPressed();
     }
-    if (IsKeyPressed(KEY_BACKSPACE) && text.size() > 0) {
+    if ((IsKeyPressed(KEY_BACKSPACE) || IsKeyPressedRepeat(KEY_BACKSPACE)) &&
+        text.size() > 0) {
       text.erase(text.size() - 1, 1);
     }
     if (IsKeyPressed(KEY_ENTER)) {

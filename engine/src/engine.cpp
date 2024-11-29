@@ -150,7 +150,6 @@ void EngineState::loop() {
 
     Bar.update();
     inspector->update();
-    LayerIcons->update();
 
     BeginDrawing();
     ClearBackground(BLACK);
@@ -165,6 +164,7 @@ void EngineState::loop() {
       ShaderIcons->draw(&Bar.barFrame);
     }
     if (Bar.Layers->IsOpen) {
+    LayerIcons->update();
       LayerIcons->draw();
     }
     inspector->draw(&selection->selectionWindow);

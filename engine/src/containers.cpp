@@ -103,6 +103,7 @@ LayerContainer::LayerContainer(Rectangle *barFrame,
   this->currentLayer = 0;
   this->barFrameRef = barFrame;
   this->Icons.append(new LayerIcon(currentLayer, barFrame));
+  this->selected = nullptr;
 }
 
 void LayerContainer::draw() {
@@ -142,6 +143,7 @@ void LayerContainer::update() {
                 mouse,
                 {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
           currentLayer = icon->LayerIndex;
+          selected = icon;
         }
       }
     });
@@ -149,5 +151,20 @@ void LayerContainer::update() {
             mouse, {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
       add_new();
     }
+  }
+  if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && selected) {
+    Vector2 mouse = GetMousePosition();
+    Icons.foreach ([this, mouse](LayerIcon *icon) {
+      if (CheckCollisionPointRec(mouse, icon->box)) {
+        Rectangle tmp;
+        tmp = selected->box;
+        selected->box = icon->box;
+        icon->box = tmp;
+        u8 layer_swp;
+        layer_swp = selected->LayerIndex;
+        selected->LayerIndex = icon->LayerIndex;
+        icon->LayerIndex = layer_swp;
+      }
+    });
   }
 }

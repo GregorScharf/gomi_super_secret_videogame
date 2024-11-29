@@ -18,6 +18,9 @@ ObjectInspector::ObjectInspector(Rectangle *selectionWindow) {
   this->RotationInput.set_matrix(
       {selectionWindow->width + 200,
        (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 90, 128, 28});
+  this->ShaderInput.set_matrix({selectionWindow->width + 200,
+                                (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 130,
+                                128, 28});
   RotationInput.input_type = FLOAT;
   ScaleInputx.input_type = FLOAT;
   ScaleInputy.input_type = FLOAT;
@@ -75,8 +78,6 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
   DrawRectanglePro(box, {0}, 0, Color{140, 140, 140, 255});
   DrawRectangleLinesEx(box, 2, BLACK);
 
-  // gonna need a way to make this more interactable but im still thinking
-  // of a smarter way to do that
   if (SelectedObject) {
     DrawText("Position:", box.x + 50, box.y + 10, FONTSIZE, BLACK);
 
@@ -104,7 +105,10 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
       RotationInput.setText(std::to_string(SelectedObject->rotation));
     }
     RotationInput.draw();
+
     DrawRectanglePro(shaderBox, {0, 0}, 0, Color{170, 170, 170, 255});
     DrawRectanglePro(clearShaders, {0, 0}, 0, Color{170, 170, 170, 255});
+    DrawText("remove Shader", clearShaders.x + 2, clearShaders.y + 10, 18,
+             BLACK);
   }
 }
