@@ -30,7 +30,6 @@ EngineState::EngineState() {
   }
   Objects = make_shared<GameObjectContainer>();
   icons = make_shared<IconContainer>();
-  ShaderIcons = make_shared<ShaderIconContainer>();
   LayerIcons = make_shared<LayerContainer>(&Bar.barFrame, Objects);
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
@@ -101,45 +100,8 @@ EngineState::EngineState() {
           top_offset_sh++;
         }
       }
-      if (endswith(entry.path(), ".frag") ||
-          endswith(entry.path(), ".shader")) {
-        ShaderIcon *icon =
-            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
-                                 top_offset_sh * BOX_WIDTH);
-        selection->new_object<ShaderIcon>(icon, SHADERICON);
-        left_offset_sh++;
-        if (left_offset_sh * BOX_WIDTH >= BOX_WIDTH * 2) {
-          left_offset_sh = 0;
-          top_offset_sh++;
-        }
-      }
-      if (endswith(entry.path(), ".frag") ||
-          endswith(entry.path(), ".shader")) {
-        ShaderIcon *icon =
-            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
-                                 top_offset_sh * BOX_WIDTH);
-        selection->new_object<ShaderIcon>(icon, SHADERICON);
-      }
-      if (endswith(entry.path(), ".frag") ||
-          endswith(entry.path(), ".shader")) {
-        ShaderIcon *icon =
-            ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
-                                 top_offset_sh * BOX_WIDTH);
-        selection->new_object<ShaderIcon>(icon, SHADERICON);
-      }
     }
   }
-
-  if (last) {
-    Objects->add_new(last, &UICam, 1);
-    Objects->add_new(last, &UICam, 2);
-  }
-
-  if (last) {
-    Objects->add_new(last, &UICam, 1);
-    Objects->add_new(last, &UICam, 2);
-  }
-
   this->loop();
 }
 
@@ -169,7 +131,7 @@ void EngineState::loop() {
 
     dragger->update();
 
-    selection->update(Bar.icons->IsOpen);
+    selection->update(Bar.icons->IsOpen, Bar.shaders->IsOpen);
     if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998 &&
         SceneCam.zoom + GetMouseWheelMove() * 0.02 < 10) {
       SceneCam.zoom += (f32)GetMouseWheelMove() * 0.02;

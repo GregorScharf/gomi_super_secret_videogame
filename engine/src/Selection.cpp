@@ -44,42 +44,13 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
               if (CheckCollisionPointRec(Mouse,
                                          ((ShaderIcon *)object->ptr)->scale)) {
                 this->Selected->ptr = (Selectable *)object->ptr;
-                this->Selected->type = SHADERICON;
+                this->Selected->type = ICON;
                 this->isSelected = true;
               }
             }
             break;
           }
         });
-    Objects.foreach ([this, Mouse, IconsSeletable](Selectable *object) {
-      switch (object->type) {
-      case ICON:
-        if (IconsSeletable) {
-          if (CheckCollisionPointRec(Mouse,
-                                     ((TextureIcon *)object->ptr)->scale)) {
-            this->Selected->ptr = (Selectable *)object->ptr;
-            this->Selected->type = ICON;
-            this->isSelected = true;
-          }
-        }
-        break;
-      case OBJECT: {
-        GameObject *p = (GameObject *)object->ptr;
-        Vector2 screen =
-            GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
-
-        if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
-                                           p->matrix.height})) {
-        }
-        break;
-      }
-      default:
-        break;
-      case SHADERICON:
-        // TODO: this
-        break;
-      }
-    });
   }
 
   if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
