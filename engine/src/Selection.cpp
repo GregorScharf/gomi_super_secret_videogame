@@ -1,7 +1,10 @@
 #include "../include/Selection.hpp"
 #include "Icons.hpp"
+#include "ShaderIcon.hpp"
+#include "containers.hpp"
 #include "selectable.hpp"
 #include "utils.hpp"
+#include <memory>
 #include <raylib.h>
 
 Selection::Selection(shared_ptr<GameObjectContainer> GOR,
@@ -15,30 +18,38 @@ Selection::Selection(shared_ptr<GameObjectContainer> GOR,
   selectionWindow = {0, 0, BOX_WIDTH * 2, (f32)GetScreenHeight()};
 }
 
-void Selection::update(bool IconsSeletable) {
+void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
 
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !isSelected) {
     Vector2 Mouse = GetMousePosition();
 
-    Objects.foreach ([this, Mouse, IconsSeletable](Selectable *object) {
-      switch (object->type) {
-      case ICON:
-        if (IconsSeletable) {
-          if (CheckCollisionPointRec(Mouse,
-                                     ((TextureIcon *)object->ptr)->scale)) {
-            this->Selected->ptr = (Selectable *)object->ptr;
-            this->Selected->type = ICON;
-            this->isSelected = true;
+    Objects.foreach (
+        [this, Mouse, IconsSeletable, ShadersSelectable](Selectable *object) {
+          switch (object->type) {
+          case ICON:
+            if (IconsSeletable) {
+              if (CheckCollisionPointRec(Mouse,
+                                         ((TextureIcon *)object->ptr)->scale)) {
+                this->Selected->ptr = (Selectable *)object->ptr;
+                this->Selected->type = ICON;
+                this->isSelected = true;
+              }
+            }
+            break;
+          case OBJECT:
+            break;
+          case SHADERICON:
+            if (ShadersSelectable) {
+              if (CheckCollisionPointRec(Mouse,
+                                         ((ShaderIcon *)object->ptr)->scale)) {
+                this->Selected->ptr = (Selectable *)object->ptr;
+                this->Selected->type = ICON;
+                this->isSelected = true;
+              }
+            }
+            break;
           }
-        }
-        break;
-      case OBJECT:
-        break;
-      case SHADERICON:
-        // TODO: this
-        break;
-      }
-    });
+        });
   }
 
   if (!IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
@@ -62,6 +73,14 @@ void Selection::update(bool IconsSeletable) {
         }
         break;
       case OBJECT:
+        break;
+      case SHADERICON:
+        if (CheckCollisionPointRec(Mouse, *shaderBox)) {
+          if (InspectorRef->SelectedObject) {
+            auto p = (ShaderIcon *)Selected->ptr;
+            InspectorRef->SelectedObject->setShader(p->text, &p->shader);
+          }
+        }
         break;
       }
     } else {

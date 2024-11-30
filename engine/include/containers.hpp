@@ -42,8 +42,6 @@ class ShaderIconContainer {
 public:
   ShaderIcon *add_new(string path, i32 x, i32 y);
 
-  ShaderIconContainer(Rectangle *shaderBox);
-
   void update();
 
   void foreach (std::function<void(ShaderIcon *)> func);

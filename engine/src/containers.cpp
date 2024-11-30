@@ -52,33 +52,15 @@ void GameObjectContainer::foreach (std::function<void(GameObject *)> func) {
 
 void GameObjectContainer::draw(Camera2D *camera) {
 
+  BeginMode2D(*camera);
   for (auto layer : Layers) {
     if (!(Layers[*currentLayer] == layer)) {
-      layer->foreach ([camera](GameObject *obj) {
-        Vector2 screen_pos =
-            GetWorldToScreen2D({obj->matrix.x, obj->matrix.y}, *camera);
-        Rectangle drawMatrix = {screen_pos.x, screen_pos.y,
-                                obj->matrix.width * camera->zoom,
-                                obj->matrix.height * camera->zoom};
-        DrawTexturePro(
-            *obj->texture,
-            {0, 0, (f32)obj->texture->width, (f32)obj->texture->height},
-            drawMatrix, {drawMatrix.width / 2, drawMatrix.height / 2},
-            obj->rotation, RAYWHITE);
-      });
+      layer->foreach ([](GameObject *obj) { obj->draw(); });
     }
   }
-  Layers[*currentLayer]->foreach ([camera](GameObject *obj) {
-    Vector2 screen_pos =
-        GetWorldToScreen2D({obj->matrix.x, obj->matrix.y}, *camera);
-    Rectangle drawMatrix = {screen_pos.x, screen_pos.y,
-                            obj->matrix.width * camera->zoom,
-                            obj->matrix.height * camera->zoom};
-    DrawTexturePro(*obj->texture,
-                   {0, 0, (f32)obj->texture->width, (f32)obj->texture->height},
-                   drawMatrix, {drawMatrix.width / 2, drawMatrix.height / 2},
-                   obj->rotation, RAYWHITE);
-  });
+
+  Layers[*currentLayer]->foreach ([camera](GameObject *obj) { obj->draw(); });
+  EndMode2D();
 }
 void ShaderIconContainer::foreach (std::function<void(ShaderIcon *)> func) {
   Icons.foreach (func);

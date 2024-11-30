@@ -27,12 +27,15 @@ EngineState::EngineState() {
   }
   Objects = make_shared<GameObjectContainer>();
   icons = make_shared<IconContainer>();
-  ShaderIcons = make_shared<ShaderIconContainer>();
   LayerIcons = make_shared<LayerContainer>(&Bar.barFrame, Objects);
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
-  inspector = make_unique<ObjectInspector>(&selection->selectionWindow);
+  inspector = make_shared<ObjectInspector>(&selection->selectionWindow);
+  ShaderIcons = make_shared<ShaderIconContainer>();
+
+  selection->shaderBox = &inspector->shaderBox;
+  selection->InspectorRef = inspector;
 
   i32 left_offset_tx = 0;
   i32 left_offset_sh = 0;
@@ -82,6 +85,10 @@ EngineState::EngineState() {
             ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
                                  top_offset_sh * BOX_WIDTH);
         selection->new_object<ShaderIcon>(icon, SHADERICON);
+        if (left_offset_sh * BOX_WIDTH >= BOX_WIDTH * 2) {
+          left_offset_sh = 0;
+          top_offset_sh++;
+        }
       }
     }
   }
@@ -109,7 +116,7 @@ void EngineState::loop() {
 
     dragger->update();
 
-    selection->update(Bar.icons->IsOpen);
+    selection->update(Bar.icons->IsOpen, Bar.shaders->IsOpen);
     if (SceneCam.zoom + GetMouseWheelMove() * 0.02 > 0.0899998 &&
         SceneCam.zoom + GetMouseWheelMove() * 0.02 < 10) {
       SceneCam.zoom += (f32)GetMouseWheelMove() * 0.02;
@@ -164,7 +171,7 @@ void EngineState::loop() {
       ShaderIcons->draw(&Bar.barFrame);
     }
     if (Bar.Layers->IsOpen) {
-    LayerIcons->update();
+      LayerIcons->update();
       LayerIcons->draw();
     }
     inspector->draw(&selection->selectionWindow);

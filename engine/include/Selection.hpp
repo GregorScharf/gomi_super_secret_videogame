@@ -2,6 +2,7 @@
 #include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "ObjectInspector.hpp"
+#include "ShaderIcon.hpp"
 #include "containers.hpp"
 #include "list.hpp"
 #include "selectable.hpp"
@@ -24,13 +25,15 @@ class Selection {
 
 public:
   Rectangle selectionWindow;
+  Rectangle *shaderBox;
+  shared_ptr<ObjectInspector> InspectorRef;
 
   u8 *currentLayer;
   Selection(shared_ptr<GameObjectContainer> GOR, shared_ptr<IconContainer> IR,
             Camera2D *cameraRef);
   ~Selection();
 
-  void update(bool IconsSeletable);
+  void update(bool IconsSeletable, bool ShadersSelectable);
 
   template <typename ObjectType>
   node<Selectable *> *new_object(Selectable *newObject, SelectableType Type) {

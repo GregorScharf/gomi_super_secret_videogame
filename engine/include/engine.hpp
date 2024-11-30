@@ -23,7 +23,7 @@ class EngineState {
   Camera2D SceneCam;
   Camera2D UICam;
   WindowBar Bar;
-  unique_ptr<ObjectInspector> inspector;
+  shared_ptr<ObjectInspector> inspector;
   unique_ptr<Dragger> dragger;
 
 public:

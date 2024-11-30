@@ -10,13 +10,13 @@
 
 // subclass of the selection
 class ObjectInspector {
-  GameObject *SelectedObject;
   shared_ptr<GameObjectContainer> GameObjects;
 
   TextInputWindow ScaleInputx, ScaleInputy, PositionInputx, PositionInputy,
       RotationInput, ShaderInput;
 
 public:
+  GameObject *SelectedObject;
   Rectangle shaderBox, clearShaders;
   ObjectInspector(Rectangle *selectionWindow);
   void fill(GameObject *obj);
