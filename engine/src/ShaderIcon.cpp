@@ -1,5 +1,6 @@
 #include "../include/ShaderIcon.hpp"
 #include "ErrorMessages.hpp"
+#include "fonts.hpp"
 #include <raylib.h>
 
 ShaderIcon::ShaderIcon(string &path, i32 x, i32 y) {
@@ -45,8 +46,8 @@ void ShaderIcon::draw(Rectangle *barFrame) {
 
   DrawRectangleLinesEx(dest, BorderThickness, Color{30, 30, 30, 255});
 
-  DrawText(TextFormat(text.c_str()), dest.x + fontsize, dest.y + fontsize,
-           fontsize, BLACK);
+  DrawTextEx(Fonts::Carlito, TextFormat(text.c_str()), {dest.x + 5, dest.y + 3},
+             fontsize, 1, BLACK);
 }
 
 void ShaderIcon::make_ref(node<ShaderIcon *> *reference) { ref = reference; }

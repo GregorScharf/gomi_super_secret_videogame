@@ -1,10 +1,12 @@
 #include "../include/windowbar.hpp"
+#include "fonts.hpp"
 #include <raylib.h>
 
 void Button::draw() {
   DrawRectanglePro(box, {0, 0}, 0, Color{200, 200, 200, 255});
   DrawRectangleLinesEx(box, 2, Color{170, 170, 170, 255});
-  DrawText(text.c_str(), box.x + 5, box.y + 2, 12, BLACK);
+  DrawTextEx(Fonts::Carlito, text.c_str(), {box.x + 5, box.y + 2}, 16, 1,
+             BLACK);
 }
 
 void IconButton::construct() {
@@ -24,7 +26,8 @@ void IconButton::draw() {
                      {0, 0}, 0, {150, 200, 255, 255});
   }
 
-  DrawText(text.c_str(), box.x + 5, box.y + 2, 16, BLACK);
+  DrawTextEx(Fonts::Carlito, text.c_str(), {box.x + 5, box.y + 2}, 16, 1,
+             BLACK);
 }
 
 void ShaderButton::construct() {
@@ -44,7 +47,8 @@ void ShaderButton::draw() {
                      {0, 0}, 0, {150, 200, 255, 255});
   }
 
-  DrawText(text.c_str(), box.x + 5, box.y + 2, 16, BLACK);
+  DrawTextEx(Fonts::Carlito, text.c_str(), {box.x + 5, box.y + 2}, 16, 1,
+             BLACK);
 }
 
 WindowBar::WindowBar() {
@@ -106,7 +110,8 @@ void FileButton::draw() {
                      {0, 0}, 0, {150, 200, 255, 255});
   }
 
-  DrawText(text.c_str(), box.x + 5, box.y + 2, 16, BLACK);
+  DrawTextEx(Fonts::Carlito, text.c_str(), {box.x + 5, box.y + 2}, 16, 1,
+             BLACK);
 }
 
 void FileButton::construct() {
@@ -128,7 +133,8 @@ void LayerButton::draw() {
                      {0, 0}, 0, {150, 200, 255, 255});
   }
 
-  DrawText(text.c_str(), box.x + 5, box.y + 2, 16, BLACK);
+  DrawTextEx(Fonts::Carlito, text.c_str(), {box.x + 5, box.y + 2}, 16, 1,
+             BLACK);
 }
 
 void LayerButton::construct() {

@@ -1,4 +1,5 @@
 #include "../include/ObjectInspector.hpp"
+#include "fonts.hpp"
 #include <raylib.h>
 #include <string>
 ObjectInspector::ObjectInspector(
@@ -89,7 +90,8 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
   DrawRectangleLinesEx(box, 2, BLACK);
 
   if (SelectedObject) {
-    DrawText("Position:", box.x + 50, box.y + 10, FONTSIZE, BLACK);
+    DrawTextEx(Fonts::Carlito, "Position:", {box.x + 50, box.y + 10}, 18, 1,
+               BLACK);
 
     if (!PositionInputx.IsSelected) {
       PositionInputx.setText(std::to_string(SelectedObject->matrix.x));
@@ -100,7 +102,9 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
     }
     PositionInputy.draw();
 
-    DrawText("Scale:", box.x + 50, box.y + 50, FONTSIZE, BLACK);
+    DrawTextEx(Fonts::Carlito, "Scale: ", {box.x + 50, box.y + 50}, 18, 1,
+               BLACK);
+
     if (!ScaleInputx.IsSelected) {
       ScaleInputx.setText(std::to_string(SelectedObject->matrix.width));
     }
@@ -110,17 +114,19 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
       ScaleInputy.setText(std::to_string(SelectedObject->matrix.height));
     }
     ScaleInputy.draw();
-    DrawText("Rotation: ", box.x + 50, box.y + 90, FONTSIZE, BLACK);
+    DrawTextEx(Fonts::Carlito, "Rotation", {box.x + 50, box.y + 90}, 18, 1,
+               BLACK);
+
     if (!RotationInput.IsSelected) {
       RotationInput.setText(std::to_string(SelectedObject->rotation));
     }
     RotationInput.draw();
 
     DrawRectanglePro(shaderBox, {0, 0}, 0, Color{170, 170, 170, 255});
-    DrawText(SelectedObject->shader_path.c_str(), shaderBox.x + 2,
-             shaderBox.y + 10, 18, BLACK);
+    DrawTextEx(Fonts::Carlito, SelectedObject->shader_path.c_str(),
+               {shaderBox.x + 2, shaderBox.y + 10}, 18, 1, BLACK);
     DrawRectanglePro(clearShaders, {0, 0}, 0, Color{170, 170, 170, 255});
-    DrawText("remove Shader", clearShaders.x + 2, clearShaders.y + 10, 18,
-             BLACK);
+    DrawTextEx(Fonts::Carlito, "remove Shaders",
+               {clearShaders.x + 2, clearShaders.y + 10}, 18, 1, BLACK);
   }
 }

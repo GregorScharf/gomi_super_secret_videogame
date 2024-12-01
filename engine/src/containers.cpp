@@ -3,6 +3,7 @@
 #include "Icons.hpp"
 #include "LayerIcons.hpp"
 #include "ShaderIcon.hpp"
+#include "fonts.hpp"
 #include "list.hpp"
 #include <memory>
 #include <raylib.h>
@@ -111,8 +112,8 @@ void LayerContainer::draw() {
   DrawRectangleRoundedLinesEx(
       {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20}, 2, 0, 2,
       BLACK);
-  DrawText("Add new Layer", barFrameRef->x + 305, barFrameRef->height + 21, 18,
-           BLACK);
+  DrawTextEx(Fonts::Carlito, "Add new Layer",
+             {barFrameRef->x + 305, barFrameRef->height + 21}, 18, 1, BLACK);
 }
 
 void LayerContainer::add_new() {

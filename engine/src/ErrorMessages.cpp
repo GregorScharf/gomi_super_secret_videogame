@@ -1,11 +1,13 @@
 #include "../include/ErrorMessages.hpp"
+#include "fonts.hpp"
 #include <raylib.h>
 
 vector<ErrorMessage *> ErrorMessages::messages;
 void ErrorMessage::draw(i32 index) {
   Rectangle r = {(f32)GetScreenWidth() - 300, (f32)150 * index + 40, 300, 128};
   DrawRectanglePro(r, {0}, 0, Color{120, 120, 120, 255});
-  DrawText(TextFormat(errorMessage.c_str()), r.x + 5, r.y + 5, 16, BLACK);
+  DrawTextEx(Fonts::Carlito, TextFormat(errorMessage.c_str()),
+             {r.x + 2, r.y + 10}, 16, 1, BLACK);
 }
 
 void ErrorMessages::draw() {
