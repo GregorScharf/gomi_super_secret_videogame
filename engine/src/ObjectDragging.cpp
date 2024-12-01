@@ -9,7 +9,14 @@ void Dragger::clear() { Selected = nullptr; }
 
 void Dragger::update() {
   if (Selected) {
-  f32 inverse_zoom = 1 / Camera->zoom;
+
+    if ((!CheckCollisionPointRec(GetMousePosition(), *ObjectView)) &&
+        IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+      clear();
+      return;
+    }
+
+    f32 inverse_zoom = 1 / Camera->zoom;
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
 
       Selected->matrix.x += GetMouseDelta().x * inverse_zoom;
@@ -58,7 +65,9 @@ void Dragger::draw() {
   }
 }
 
-Dragger::Dragger(Camera2D *cam) {
+Dragger::Dragger(Camera2D *cam, Rectangle *_ObjectView) {
+  this->ObjectView = _ObjectView;
+
   Camera = cam;
   Selected = nullptr;
 }

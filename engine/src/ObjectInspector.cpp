@@ -1,7 +1,10 @@
 #include "../include/ObjectInspector.hpp"
 #include <raylib.h>
 #include <string>
-ObjectInspector::ObjectInspector(Rectangle *selectionWindow) {
+ObjectInspector::ObjectInspector(
+    Rectangle *selectionWindow,
+    shared_ptr<GameObjectContainer> GameObjectsRef) {
+  this->GameObjects = GameObjectsRef;
   this->SelectedObject = nullptr;
   this->PositionInputx.set_matrix(
       {selectionWindow->width + 200,
@@ -18,20 +21,16 @@ ObjectInspector::ObjectInspector(Rectangle *selectionWindow) {
   this->RotationInput.set_matrix(
       {selectionWindow->width + 200,
        (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 90, 128, 28});
-  this->ShaderInput.set_matrix({selectionWindow->width + 200,
-                                (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 130,
-                                128, 28});
   RotationInput.input_type = FLOAT;
   ScaleInputx.input_type = FLOAT;
   ScaleInputy.input_type = FLOAT;
   PositionInputx.input_type = FLOAT;
   PositionInputy.input_type = FLOAT;
-  ShaderInput.input_type = STRING;
 
   shaderBox = {selectionWindow->width + 500,
-               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
-  clearShaders = {selectionWindow->width + 625,
-                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 100, 80};
+               (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 10, 200, 40};
+  clearShaders = {selectionWindow->width + 500,
+                  (f32)GetScreenHeight() - INSPECTOR_HEIGHT + 100, 200, 40};
 }
 
 void ObjectInspector::update() {
@@ -41,7 +40,6 @@ void ObjectInspector::update() {
   RotationInput.update(mouse);
   PositionInputx.update(mouse);
   PositionInputy.update(mouse);
-  ShaderInput.update(mouse);
 
   if (SelectedObject) {
     if (ScaleInputx.can_callback()) {
@@ -59,7 +57,19 @@ void ObjectInspector::update() {
     if (PositionInputy.can_callback()) {
       SelectedObject->matrix.y = std::stof(PositionInputy.callback());
     }
-    if (ShaderInput.can_callback()) {
+
+    if (CheckCollisionPointRec(mouse, clearShaders) &&
+        IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+      SelectedObject->clearShader();
+    }
+
+    if (IsKeyPressed(KEY_DELETE)) {
+      GameObjects->erase(SelectedObject->ObjectListKey);
+
+      // add the other list removal here when it crashes
+
+      delete SelectedObject;
+      clear();
     }
   }
 }
@@ -107,6 +117,8 @@ void ObjectInspector::draw(Rectangle *selectionWindow) {
     RotationInput.draw();
 
     DrawRectanglePro(shaderBox, {0, 0}, 0, Color{170, 170, 170, 255});
+    DrawText(SelectedObject->shader_path.c_str(), shaderBox.x + 2,
+             shaderBox.y + 10, 18, BLACK);
     DrawRectanglePro(clearShaders, {0, 0}, 0, Color{170, 170, 170, 255});
     DrawText("remove Shader", clearShaders.x + 2, clearShaders.y + 10, 18,
              BLACK);

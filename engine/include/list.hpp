@@ -21,9 +21,12 @@ public:
     this->head->data = nullptr;
   };
   void erase(node<T> *n) {
-    n->last->next = n->next;
-    n->next->last = n->last;
-
+    if (n->last) {
+      n->last->next = n->next;
+    }
+    if (n->next) {
+      n->next->last = n->last;
+    }
     delete n;
   };
   node<T> *append(T new_data) {

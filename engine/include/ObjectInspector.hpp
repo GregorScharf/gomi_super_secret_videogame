@@ -13,12 +13,13 @@ class ObjectInspector {
   shared_ptr<GameObjectContainer> GameObjects;
 
   TextInputWindow ScaleInputx, ScaleInputy, PositionInputx, PositionInputy,
-      RotationInput, ShaderInput;
+      RotationInput;
 
 public:
   GameObject *SelectedObject;
   Rectangle shaderBox, clearShaders;
-  ObjectInspector(Rectangle *selectionWindow);
+  ObjectInspector(Rectangle *selectionWindow,
+                  shared_ptr<GameObjectContainer> GameObjectsRef);
   void fill(GameObject *obj);
   void clear();
 

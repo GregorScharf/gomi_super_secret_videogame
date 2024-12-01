@@ -44,6 +44,15 @@ GameObject *GameObjectContainer::add_new(TextureIcon *icon, Camera2D *camera,
   return newObject;
 }
 
+// we don't need to find the layer the object is on since a node can be removed
+// using only the data it contains in itself, therefore this is just syntax
+// sugar
+void GameObjectContainer::erase(node<GameObject *> *node) {
+  if (Layers[0]) {
+    Layers[0]->erase(node);
+  }
+}
+
 void GameObjectContainer::foreach (std::function<void(GameObject *)> func) {
   for (auto layer : Layers) {
     layer->foreach (func);

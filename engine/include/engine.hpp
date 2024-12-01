@@ -20,6 +20,7 @@ class EngineState {
   shared_ptr<LayerContainer> LayerIcons;
   unique_ptr<Selection> selection;
   Rectangle selectionWindow;
+  Rectangle objectView;
   Camera2D SceneCam;
   Camera2D UICam;
   WindowBar Bar;

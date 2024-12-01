@@ -1,4 +1,5 @@
 #include "../include/TextInputWindows.hpp"
+#include "fonts.hpp"
 #include "utils.hpp"
 #include <raylib.h>
 #include <string>
@@ -20,9 +21,14 @@ string TextInputWindow::callback() {
 }
 
 void TextInputWindow::draw() {
-  DrawRectangleRounded(matrix, 3, 0, Color{120, 120, 120, 255});
-  DrawRectangleRoundedLines(matrix, 3, 0, Color{170, 170, 170, 255});
-  DrawText(text.c_str(), matrix.x + 10, matrix.y + 5, 18, RAYWHITE);
+  DrawRectangleRounded(matrix, 2, 0, Color{120, 120, 120, 255});
+  if (!IsSelected) {
+    DrawRectangleRoundedLines(matrix, 2, 0, Color{170, 170, 170, 255});
+  } else {
+    DrawRectangleRoundedLines(matrix, 2, 0, Color{100, 170, 255, 255});
+  }
+  DrawTextEx(Fonts::Carlito, text.c_str(), {matrix.x + 10, matrix.y + 5}, 18, 1,
+             RAYWHITE);
 }
 
 void TextInputWindow::set_matrix(Rectangle newMatrix) { matrix = newMatrix; }

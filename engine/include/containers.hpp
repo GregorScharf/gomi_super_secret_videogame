@@ -17,6 +17,7 @@ public:
   u8 *currentLayer;
   GameObjectContainer();
   GameObject *add_new(TextureIcon *icon, Camera2D *camera, u8 Layer);
+  void erase(node<GameObject *> *node);
 
   // this can get really, really expensive, so be careful
   void foreach (std::function<void(GameObject *)> func);

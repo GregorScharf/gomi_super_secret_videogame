@@ -32,14 +32,10 @@ void GameObject::draw() {
   if (shader) {
     BeginShaderMode(*shader);
     DrawTexturePro(*texture, {0, 0, (f32)texture->width, (f32)texture->height},
-                   matrix, {(f32)texture->width / 2, (f32)texture->height / 2},
-                   0, RAYWHITE);
+                   matrix, {matrix.width / 2, matrix.height / 2}, 0, RAYWHITE);
     EndShaderMode();
-  }
-  else{
+  } else {
     DrawTexturePro(*texture, {0, 0, (f32)texture->width, (f32)texture->height},
-                   matrix, {(f32)texture->width / 2, (f32)texture->height / 2},
-                   0, RAYWHITE);
- 
+                   matrix, {matrix.width / 2, matrix.height / 2}, 0, RAYWHITE);
   }
 }

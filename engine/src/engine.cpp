@@ -1,10 +1,12 @@
 #include "../include/engine.hpp"
+#include "ErrorMessages.hpp"
 #include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "ShaderIcon.hpp"
 #include "containers.hpp"
+#include "fonts.hpp"
 #include "utils.hpp"
 #include <memory>
 #include <raylib.h>
@@ -14,6 +16,8 @@ EngineState::EngineState() {
   // uggggghhhhhhhhhhhhhhhhhhhhhhhhh
 
   InitWindow(0, 0, "levelbuilder");
+
+  Fonts::LoadFonts();
 
   i32 monitor = GetCurrentMonitor();
 
@@ -31,7 +35,8 @@ EngineState::EngineState() {
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
-  inspector = make_shared<ObjectInspector>(&selection->selectionWindow);
+  inspector =
+      make_shared<ObjectInspector>(&selection->selectionWindow, Objects);
   ShaderIcons = make_shared<ShaderIconContainer>();
 
   selection->shaderBox = &inspector->shaderBox;
@@ -50,7 +55,11 @@ EngineState::EngineState() {
   SceneCam.rotation = 0;
   SceneCam.zoom = 1;
 
-  dragger = make_unique<Dragger>(&SceneCam);
+  objectView = {selection->selectionWindow.width, Bar.barFrame.height,
+                (f32)GetScreenWidth() - selection->selectionWindow.width,
+                (f32)GetScreenHeight() - selection->selectionWindow.height};
+
+  dragger = make_unique<Dragger>(&SceneCam, &objectView);
 
   UICam.zoom = 1;     // this should never change, i hope
   UICam.rotation = 0; // same goes for here
@@ -85,6 +94,7 @@ EngineState::EngineState() {
             ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
                                  top_offset_sh * BOX_WIDTH);
         selection->new_object<ShaderIcon>(icon, SHADERICON);
+        left_offset_sh++;
         if (left_offset_sh * BOX_WIDTH >= BOX_WIDTH * 2) {
           left_offset_sh = 0;
           top_offset_sh++;
@@ -108,6 +118,8 @@ EngineState::~EngineState() {
     icon = nullptr;
   });
   this->icons.reset();
+
+  Fonts::UnloadFonts();
 }
 
 void EngineState::loop() {
@@ -177,6 +189,9 @@ void EngineState::loop() {
     inspector->draw(&selection->selectionWindow);
     selection->draw();
     Bar.draw();
+
+    ErrorMessages::draw();
+
     EndDrawing();
   }
 }
