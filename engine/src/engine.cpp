@@ -6,6 +6,7 @@
 #include "ObjectInspector.hpp"
 #include "ShaderIcon.hpp"
 #include "containers.hpp"
+#include "fonts.hpp"
 #include "utils.hpp"
 #include <memory>
 #include <raylib.h>
