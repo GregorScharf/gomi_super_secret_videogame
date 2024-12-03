@@ -9,8 +9,9 @@ GameObject::GameObject(Vector2 pos, Texture *textureRef, string &textPath, u8 La
 
   this->rotation = 0;
   this->scale = {0, 0};
-  this->collider.reset();
+  this->collider = Collider();
   this->texture_path = textPath;
   this->UID = UIDGenerator::GetNewUid();
+  this->layer_id = Layer;
   this->type = OBJECT;
 }

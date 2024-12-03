@@ -31,17 +31,17 @@ void Selection::update(bool IconsSeletable) {
           }
         }
         break;
-      case OBJECT:
-        cout << "OBJECT\n";
+      case OBJECT: {
         GameObject *p = (GameObject *)object->ptr;
         Vector2 screen =
             GetWorldToScreen2D({p->matrix.x, p->matrix.y}, *camera);
-        cout << screen.x << "  " << screen.y << "  " << p->matrix.width << "  "
-             << p->matrix.height << endl;
 
         if (CheckCollisionPointRec(Mouse, {screen.x, screen.y, p->matrix.width,
                                            p->matrix.height})) {
         }
+        break;
+      }
+      default:
         break;
       }
     });
@@ -66,7 +66,8 @@ void Selection::update(bool IconsSeletable) {
       }
       break;
     case OBJECT:
-
+      break;
+    default:
       break;
     }
   }
