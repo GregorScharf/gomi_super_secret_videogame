@@ -23,19 +23,21 @@ void GameObject::clearShader() {
   shader = nullptr;
 }
 
-void GameObject::setShader(string &path, Shader *shaderRef) {
+void GameObject::setShader(string &path, ShaderObject *shaderRef) {
   shader_path = path;
   shader = shaderRef;
 }
 
 void GameObject::draw() {
   if (shader) {
-    BeginShaderMode(*shader);
+    BeginShaderMode(*shader->get());
     DrawTexturePro(*texture, {0, 0, (f32)texture->width, (f32)texture->height},
-                   matrix, {matrix.width / 2, matrix.height / 2}, 0, RAYWHITE);
+                   matrix, {matrix.width / 2, matrix.height / 2}, rotation,
+                   RAYWHITE);
     EndShaderMode();
   } else {
     DrawTexturePro(*texture, {0, 0, (f32)texture->width, (f32)texture->height},
-                   matrix, {matrix.width / 2, matrix.height / 2}, 0, RAYWHITE);
+                   matrix, {matrix.width / 2, matrix.height / 2}, rotation,
+                   RAYWHITE);
   }
 }

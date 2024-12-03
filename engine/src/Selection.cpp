@@ -42,7 +42,6 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
             if (ShadersSelectable) {
               if (CheckCollisionPointRec(Mouse,
                                          ((ShaderIcon *)object->ptr)->scale)) {
-                cout << "clicked on shaderIcon \n";
                 this->Selected->ptr = (Selectable *)object->ptr;
                 this->Selected->type = SHADERICON;
                 this->isSelected = true;
@@ -58,7 +57,6 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
       Vector2 Mouse = GetMousePosition();
       Rectangle WindowRec = {0, 0, (f32)GetScreenWidth(),
                              (f32)GetScreenHeight()};
-      cout << Selected->type << endl;
       switch (Selected->type) {
       case ICON:
         if (!CheckCollisionPointRec(Mouse, selectionWindow) &&
@@ -80,7 +78,7 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
         if (CheckCollisionPointRec(Mouse, *shaderBox)) {
           if (InspectorRef->SelectedObject) {
             auto p = (ShaderIcon *)Selected->ptr;
-            InspectorRef->SelectedObject->setShader(p->text, &p->shader);
+            InspectorRef->SelectedObject->setShader(p->text, p->shader.get());
           }
         }
         break;

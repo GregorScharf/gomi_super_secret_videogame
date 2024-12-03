@@ -1,5 +1,6 @@
 #include "../include/ShaderIcon.hpp"
 #include "ErrorMessages.hpp"
+#include "ShaderObjects.hpp"
 #include "fonts.hpp"
 #include <raylib.h>
 
@@ -11,12 +12,11 @@ ShaderIcon::ShaderIcon(string &path, i32 x, i32 y) {
       128,
   };
 
-  shader = LoadShader(0, path.c_str());
-
+  shader = make_unique<ShaderObject>(path);
   // just realized this wont be portable for windows
   text = path.substr(path.find_last_of('/') + 1,
                      path.size() - path.find_last_of('/') - 1);
-  if (!IsShaderReady(shader)) {
+  if (!shader->check()) {
     string errorMessage;
     errorMessage =
         "Shader {" + text +

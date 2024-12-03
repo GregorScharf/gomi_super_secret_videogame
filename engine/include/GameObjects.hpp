@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Colliders.hpp"
+#include "ShaderObjects.hpp"
 #include "list.hpp"
 #include "selectable.hpp"
 #include "types.hpp"
@@ -17,14 +18,14 @@ public:
   Collider collider;
   string texture_path, shader_path;
   Texture *texture;
-  Shader *shader;
+  ShaderObject *shader;
   u64 UID;
   u8 LayerID;
   node<GameObject *> *ObjectListKey;
 
   GameObject(Vector2 pos, Texture *textureRef, string &textPath, u8 Layer);
 
-  void setShader(string &path, Shader *shaderRef);
+  void setShader(string &path, ShaderObject *shaderRef);
   void clearShader();
 
   void draw();

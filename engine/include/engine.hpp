@@ -30,5 +30,6 @@ class EngineState {
 public:
   EngineState();
   ~EngineState();
+  void reload();
   void loop();
 };

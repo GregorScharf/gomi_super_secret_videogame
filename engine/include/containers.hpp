@@ -29,6 +29,8 @@ class IconContainer {
   DLinkedList<TextureIcon *> Icons;
 
 public:
+  void load();
+
   TextureIcon *add_new(string path, i32 x, i32 y);
 
   void foreach (std::function<void(TextureIcon *)> func);
@@ -41,6 +43,8 @@ class ShaderIconContainer {
   Rectangle *shaderAttributeBox;
 
 public:
+  void load();
+
   ShaderIcon *add_new(string path, i32 x, i32 y);
 
   void update();

@@ -2,9 +2,11 @@
 #include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "LayerIcons.hpp"
+#include "Selection.hpp"
 #include "ShaderIcon.hpp"
 #include "fonts.hpp"
 #include "list.hpp"
+#include <filesystem>
 #include <memory>
 #include <raylib.h>
 
@@ -23,6 +25,25 @@ TextureIcon *IconContainer::add_new(string path, i32 x, i32 y) {
   auto ref = Icons.append(newIcon);
   newIcon->make_ref(ref);
   return newIcon;
+}
+
+void IconContainer::load() {
+  i32 top_offset, left_offset = 0;
+  string path = fs::current_path();
+
+  for (const auto &entry : fs::directory_iterator(path)) {
+    if (entry.is_regular_file()) {
+      if (endswith(entry.path(), ".png")) {
+        TextureIcon *icon = add_new(entry.path(), left_offset * BOX_WIDTH,
+                                    top_offset * (BOX_WIDTH / 2));
+        left_offset++;
+        if (left_offset * BOX_WIDTH >= BOX_WIDTH * 2) {
+          left_offset = 0;
+          top_offset++;
+        }
+      }
+    }
+  }
 }
 
 GameObjectContainer::GameObjectContainer() {
