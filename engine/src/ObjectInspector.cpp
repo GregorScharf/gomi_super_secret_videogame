@@ -79,14 +79,12 @@ void ObjectInspector::fill(GameObject *obj) { SelectedObject = obj; }
 
 void ObjectInspector::clear() { SelectedObject = nullptr; }
 
-#define FONTSIZE 18
-
 void ObjectInspector::draw(Rectangle *selectionWindow) {
   Rectangle box = {
       selectionWindow->width, (f32)GetScreenHeight() - INSPECTOR_HEIGHT,
       INSPECTOR_WIDTH_IS_FULL * (f32)GetScreenWidth() - selectionWindow->width,
       INSPECTOR_HEIGHT};
-  DrawRectanglePro(box, {0}, 0, Color{140, 140, 140, 255});
+  DrawRectanglePro(box, {0, 0}, 0, Color{140, 140, 140, 255});
   DrawRectangleLinesEx(box, 2, BLACK);
 
   // gonna need a way to make this more interactable but im still thinking

@@ -15,8 +15,6 @@ class ObjectInspector {
   TextInputWindow ScaleInputx, ScaleInputy, PositionInputx, PositionInputy,
       RotationInput;
 
-  Rectangle shaderBox, clearShaders;
-
 public:
   GameObject *SelectedObject;
   Rectangle shaderBox, clearShaders;

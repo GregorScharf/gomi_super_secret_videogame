@@ -26,7 +26,11 @@
  * - https://marzer.github.io/tomlplusplus/#mainpage-example-serialization
  * - https://godbolt.org/z/jbG1o4sd1
  */
-void Serializer::ToToml(GameObjectContainer& g_obj_cont, IconContainer& icon_cont /*, &ShaderIcon shade_cont*/) {
+
+
+
+ //Serializer::SerializerCode Serializer::ToToml(GameObjectContainer& g_obj_cont, IconContainer& icon_cont /*, &ShaderIcon shade_cont*/) {
+ /*
     auto doc = toml::table{};     // Final TOML document
     auto go_arr = toml::array{};  // List of GameObject items, can reference tx_arr[] or im_arr[] item indexes
     auto tx_arr = toml::array{};  // List of texture instances and metadata, can reference im_arr[] item indexes
@@ -210,21 +214,6 @@ void Serializer::ToToml(GameObjectContainer& g_obj_cont, IconContainer& icon_con
                             }
                         }
 
-<<<<<<< HEAD
-    if ((ico->ref) && (ico->ref->next)) {
-      printf(".next %d\n", ico->ref->data->texture.id); // Texture{} raylib.h
-    } else {
-      printf(".texture NA\n");
-    }
-
-    printf(".BorderThickness %d\n", ico->BorderThickness);
-  });
-
-    //ShaderIcon const * sh =
-    //for (auto shade : shade_cont) {
-    //    shade_cont;
-    //}
-=======
                         if (im_ind < tex_arr_ref->size()) {
                             // Reference texture resource index
                             elm.insert("texture_imid", im_ind);
@@ -298,7 +287,6 @@ void Serializer::ToToml(GameObjectContainer& g_obj_cont, IconContainer& icon_con
             im_arr.emplace_back(t_and_tids);
         }
     }
->>>>>>> a304625 (serializer to toml initial file output)
 
     // Be nice and list/serialize raw external resources first before anything that might reference them
     // But the toml++ serializer doesn't respect insertion order???
@@ -313,19 +301,12 @@ void Serializer::ToToml(GameObjectContainer& g_obj_cont, IconContainer& icon_con
     fout << std::endl;
     fout.close();
 
-<<<<<<< HEAD
-  return serializer_ok;
+    return SerializerCode::serializer_ok;
 }
 
-enum Serializer::SerializerCode Serializer::FromToml(void) {
-  // Walk inputs and append if not already found
-  return serializer_parsing_err;
-=======
-    return;
-}
+*/
 
-void Serializer::FromToml(void) {
+Serializer::SerializerCode Serializer::FromToml(void) {
     // Walk inputs and append if not already found
-    return;
->>>>>>> a304625 (serializer to toml initial file output)
+    return SerializerCode::serializer_parsing_err;
 }

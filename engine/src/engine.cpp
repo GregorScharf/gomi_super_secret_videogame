@@ -108,7 +108,7 @@ EngineState::EngineState() {
 
 EngineState::~EngineState() {
 
-  Serializer::ToToml(*this->Objects.get(), *this->icons.get());
+  //Serializer::ToToml(*this->Objects.get(), *this->icons.get());
 
 
   this->selection.reset();

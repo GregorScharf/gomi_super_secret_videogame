@@ -34,7 +34,6 @@ bool is_int(string &s) {
   return true;
 }
 
-// hehe haha
 bool is_uint(string &s) {
   for (char c : s) {
     if (c < 48 || c > 57) {
@@ -46,6 +45,11 @@ bool is_uint(string &s) {
 
 bool is_float(string &s) {
   bool dot = false;
+
+  if(s.size() == 0) {
+    return false;
+  }
+
   for (char c : s) {
     if (c < 48 || c > 57) {
       if (c != '.' || dot) {

@@ -27,25 +27,6 @@ TextureIcon *IconContainer::add_new(string path, i32 x, i32 y) {
   return newIcon;
 }
 
-void IconContainer::load() {
-  i32 top_offset, left_offset = 0;
-  string path = fs::current_path();
-
-  for (const auto &entry : fs::directory_iterator(path)) {
-    if (entry.is_regular_file()) {
-      if (endswith(entry.path(), ".png")) {
-        TextureIcon *icon = add_new(entry.path(), left_offset * BOX_WIDTH,
-                                    top_offset * (BOX_WIDTH / 2));
-        left_offset++;
-        if (left_offset * BOX_WIDTH >= BOX_WIDTH * 2) {
-          left_offset = 0;
-          top_offset++;
-        }
-      }
-    }
-  }
-}
-
 GameObjectContainer::GameObjectContainer() {
   Layers.push_back(new DLinkedList<GameObject *>());
 }
@@ -179,76 +160,5 @@ void LayerContainer::update() {
         icon->LayerIndex = layer_swp;
       }
     });
-  }
-}
-void ShaderIconContainer::foreach (std::function<void(ShaderIcon *)> func) {
-  Icons.foreach (func);
-}
-
-void ShaderIconContainer::draw(Rectangle *barFrame) {
-
-  Icons.foreach ([barFrame](ShaderIcon *icon) { icon->draw(barFrame); });
-}
-ShaderIcon *ShaderIconContainer::add_new(string path, i32 x, i32 y) {
-
-  ShaderIcon *newIcon = new ShaderIcon(path, x, y);
-  auto ref = Icons.append(newIcon);
-  newIcon->make_ref(ref);
-  return newIcon;
-}
-
-LayerContainer::LayerContainer(Rectangle *barFrame,
-                               shared_ptr<GameObjectContainer> GameObjects) {
-  this->GameObjectstRef = GameObjects;
-  this->LayerAmount = 1;
-  this->currentLayer = 0;
-  this->barFrameRef = barFrame;
-  this->Icons.append(new LayerIcon(currentLayer, barFrame));
-}
-
-void LayerContainer::draw() {
-  Icons.foreach ([this](LayerIcon *icon) {
-    if (icon->LayerIndex == currentLayer) {
-      DrawRectangleRec({0, icon->box.y, 2 * BOX_WIDTH, BOX_WIDTH / 4},
-                       Color{100, 200, 255, 200});
-    }
-    icon->draw();
-  });
-  DrawRectangleRounded(
-      {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20}, 2, 0,
-      Color{170, 170, 170, 255});
-  DrawRectangleRoundedLinesEx(
-      {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20}, 2, 0, 2,
-      BLACK);
-  DrawText("Add new Layer", barFrameRef->x + 305, barFrameRef->height + 21, 18,
-           BLACK);
-}
-
-void LayerContainer::add_new() {
-
-  // hard cap that shit
-  if (!(LayerAmount > 254)) {
-    Icons.append(new LayerIcon(LayerAmount, barFrameRef));
-    GameObjectstRef->Layers.push_back(new DLinkedList<GameObject *>());
-    LayerAmount++;
-  }
-}
-
-void LayerContainer::update() {
-  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    Vector2 mouse = GetMousePosition();
-    Icons.foreach ([this, mouse](LayerIcon *icon) {
-      if (CheckCollisionPointRec(mouse, icon->box)) {
-        if (!CheckCollisionPointRec(
-                mouse,
-                {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
-          currentLayer = icon->LayerIndex;
-        }
-      }
-    });
-    if (CheckCollisionPointRec(
-            mouse, {barFrameRef->x + 300, barFrameRef->height + 20, 128, 20})) {
-      add_new();
-    }
   }
 }

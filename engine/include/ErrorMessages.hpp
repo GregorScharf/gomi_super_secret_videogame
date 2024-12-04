@@ -6,6 +6,7 @@
 enum ErrorCodes {
   SHADER_FAILED_TO_COMPILE = 0,
   TEXTURE_FAILED_TO_LOAD = 1,
+  DYNAMIC_TYPE_CONVERSION_FAILED = 2,
 };
 
 class ErrorMessage {

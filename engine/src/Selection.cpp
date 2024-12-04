@@ -109,21 +109,4 @@ void Selection::draw() {
   }
 }
 
-void Selection::draw() {
-  if (isSelected && Selected) {
-    if (Selected->type == ICON) {
-      auto p = (TextureIcon *)Selected->ptr;
-      Vector2 mouse = GetMousePosition();
-
-      DrawTexturePro(p->texture,
-                     {0, 0, (f32)p->texture.width, (f32)p->texture.height},
-                     {mouse.x, mouse.y, p->texture.width * (f32)0.4,
-                      p->texture.height * (f32)0.4},
-                     {(f32)p->texture.width * (f32)0.4 / 2,
-                      (f32)p->texture.height * (f32)0.4 / 2},
-                     0, Color{100, 200, 255, 100});
-    }
-  }
-}
-
 Selection::~Selection() { delete Selected; }

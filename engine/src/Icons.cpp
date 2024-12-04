@@ -24,23 +24,6 @@ TextureIcon::TextureIcon(string path, i32 x, i32 y) {
 void TextureIcon::make_ref(node<TextureIcon *> *reference) { ref = reference; }
 
 void TextureIcon::draw(Rectangle *barFrame) {
-
-  // this is kind of a hack but ehhh
-  i32 charsPerLine = scale.width / fontsize;
-  charsPerLine--;
-  i32 lines = text.size() / charsPerLine;
-
-  string drawText = text;
-
-  for (i32 i = 0; i < lines; i++) {
-    drawText.insert((i + 1) * charsPerLine, "\n");
-  }
-  text = drawText;
-}
-
-void TextureIcon::make_ref(node<TextureIcon *> *reference) { ref = reference; }
-
-void TextureIcon::draw(Rectangle *barFrame) {
   Rectangle dest = {scale.x, scale.y + barFrame->height,
                     f32((BOX_WIDTH)-border_thickness),
                     f32((scale.height) - 2 * border_thickness)};

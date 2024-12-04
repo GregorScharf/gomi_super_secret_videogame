@@ -5,13 +5,13 @@
 vector<ErrorMessage *> ErrorMessages::messages;
 void ErrorMessage::draw(i32 index) {
   Rectangle r = {(f32)GetScreenWidth() - 300, (f32)150 * index + 40, 300, 128};
-  DrawRectanglePro(r, {0}, 0, Color{120, 120, 120, 255});
+  DrawRectanglePro(r, {0, 0}, 0, Color{120, 120, 120, 255});
   DrawTextEx(Fonts::Carlito, TextFormat(errorMessage.c_str()),
              {r.x + 2, r.y + 10}, 16, 1, BLACK);
 }
 
 void ErrorMessages::draw() {
-  for (i32 i = 0; i < messages.size(); i++) {
+  for (u64 i = 0; i < messages.size(); i++) {
     messages[i]->draw(i);
   }
 }
@@ -27,6 +27,10 @@ i32 ErrorMessages::add_new(ErrorCodes code, string &message) {
     break;
   case TEXTURE_FAILED_TO_LOAD:
     p->errorMessage += "ERROR: FAILED TO LOAD A TEXTURE\n";
+    p->errorMessage += message;
+    break;
+  case DYNAMIC_TYPE_CONVERSION_FAILED:
+    p->errorMessage += "ERROR: FAILED TYPE CONVERSION\n";
     p->errorMessage += message;
     break;
   }

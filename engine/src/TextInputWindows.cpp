@@ -1,4 +1,5 @@
 #include "../include/TextInputWindows.hpp"
+#include "ErrorMessages.hpp"
 #include "fonts.hpp"
 #include "utils.hpp"
 #include <raylib.h>
@@ -33,8 +34,6 @@ void TextInputWindow::draw() {
 
 void TextInputWindow::set_matrix(Rectangle newMatrix) { matrix = newMatrix; }
 
-#define MAX_LETTERS_INPUT 12
-
 i32 TextInputWindow::setText(string newText) {
   if (!IsSelected) {
     text = newText;
@@ -56,6 +55,12 @@ void TextInputWindow::update(Vector2 mouse) {
     char key = GetCharPressed();
     while (key > 0) {
       switch (input_type) {
+
+      case NO_TYPE:
+        if (text.size() <= max_input_length) {
+          text.push_back(key);
+        }
+        break;
       case STRING:
         if (text.size() <= max_input_length) {
           text.push_back(key);
@@ -111,13 +116,10 @@ void TextInputWindow::update(Vector2 mouse) {
         }
         break;
       case FLOAT:
-        if (is_float(text)) {
-          callBackAvailable = true;
-        } else {
-          callBackAvailable = false;
-          // add the error here aswell
+        callBackAvailable = is_float(text);
+        if (text.size() == 0) {
+          text = "0";
         }
-
         break;
       case NO_TYPE:
         callBackAvailable = false;

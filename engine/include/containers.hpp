@@ -17,10 +17,8 @@ public:
 
 public:
   vector<DLinkedList<GameObject *> *> Layers;
-  u8 *currentLayer;
   GameObjectContainer();
   u8 *currentLayer;
-  GameObjectContainer();
   GameObject *add_new(TextureIcon *icon, Camera2D *camera, u8 Layer);
   void erase(node<GameObject *> *node);
 

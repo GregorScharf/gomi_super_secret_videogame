@@ -13,23 +13,13 @@ typedef enum INPUT_TYPES {
   NO_TYPE = 4 // default, set to something else after construction
 } INPUT_TYPES;
 
-// update: i hate you raysan
-
-typedef enum INPUT_TYPES {
-  STRING = 0,
-  INTEGER = 1,
-  UNSIGNED_INT = 2,
-  FLOAT = 3,
-  NO_TYPE = 4 // default, set to something else after construction
-} INPUT_TYPES;
-
 class TextInputWindow {
   string text;
   Rectangle matrix;
   bool callBackAvailable;
 
 public:
-  i32 max_input_length = 12; 
+  u64 max_input_length = 12;
   bool IsSelected;
   INPUT_TYPES input_type;
   bool can_callback();

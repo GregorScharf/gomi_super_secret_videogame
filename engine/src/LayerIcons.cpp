@@ -10,7 +10,7 @@ LayerIcon::LayerIcon(u8 index, Rectangle *barFrame) {
   this->box = {barFrame->x, barFrame->height + (index * (BOX_WIDTH / 4)),
                BOX_WIDTH * 2, BOX_WIDTH / 4};
   this->name.set_matrix({box.x + 10, box.y + 10, 250, 28});
-  this->name.setText("Layer " + std::to_string(index));
+  this->name.setText("Layer " + std::to_string(*(i32*)&index));
   this->name.input_type = STRING;
   this->name.max_input_length = 20;
 }
