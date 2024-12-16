@@ -44,13 +44,4 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-typedef struct Vec2 {
-  f32 x;
-  f32 y;
-} Vec2;
-
-typedef struct Vec3 {
-  f32 x;
-  f32 y;
-  f32 z;
-} Vec3;
+const f32 RAD_TO_DEC = 57.2958;

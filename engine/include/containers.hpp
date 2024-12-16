@@ -8,15 +8,18 @@
 #include "selectable.hpp"
 #include "types.hpp"
 #include <memory>
-#include <memory>
 #include <raylib.h>
+
+struct Layer {
+  u64 uid;
+  DLinkedList<GameObject *> *Layer;
+};
 
 class GameObjectContainer {
 
 public:
-
 public:
-  vector<DLinkedList<GameObject *> *> Layers;
+  vector<Layer *> Layers;
   GameObjectContainer();
   u8 *currentLayer;
   GameObject *add_new(TextureIcon *icon, Camera2D *camera, u8 Layer);
@@ -71,4 +74,5 @@ public:
   void add_new();
   void update();
   void draw();
+  void clear();
 };

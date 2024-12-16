@@ -14,7 +14,8 @@ public:
     serializer_ok_duplicates = 1,
     // serializer_ok_
   };
-  //static enum SerializerCode ToToml(GameObjectContainer &g_obj_cont,
-  //       IconContainer &icon_cont /*, &ShaderIcon shade_cont*/);
+  static enum SerializerCode
+  ToToml(GameObjectContainer &g_obj_cont,
+         IconContainer &icon_cont /*, &ShaderIcon shade_cont*/);
   enum SerializerCode FromToml(void);
 };

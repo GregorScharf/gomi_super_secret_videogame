@@ -2,12 +2,11 @@
 #include "GameObjects.hpp"
 #include "Icons.hpp"
 #include "ObjectDragging.hpp"
-#include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
 #include "Selection.hpp"
+#include "Serializer.hpp"
 #include "containers.hpp"
 #include "list.hpp"
-#include "Serializer.hpp"
 #include "types.hpp"
 #include "utils.hpp"
 #include "windowbar.hpp"
@@ -32,6 +31,6 @@ class EngineState {
 public:
   EngineState();
   ~EngineState();
-  void reload();
+  void reload(string load_file = "");
   void loop();
 };

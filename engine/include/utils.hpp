@@ -13,3 +13,13 @@ bool is_float(string &s);
 
 Rectangle RecWorldToScreen(Rectangle *rec, Camera2D *camera);
 Rectangle RecScreenToWorld(Rectangle *rec, Camera2D *camera);
+
+void DrawRectangleAngle(Rectangle rec, float lineThick, float angle,
+                        Color color);
+
+void DrawRectangleAngleEx(Rectangle rec, Vector2 center, float lineThick,
+                          float angle, Color color);
+
+bool AngledRecPointCollision(Vector2 p, Rectangle r, Vector2 center, f32 angle);
+
+u64 extractBits(u64 num, u64 pos = 0, u64 k = 1);

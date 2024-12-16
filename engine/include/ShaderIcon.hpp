@@ -10,7 +10,7 @@
 
 class ShaderIcon : public Selectable {
 public:
-  unique_ptr<ShaderObject> shader;
+  ShaderObject *shader;
   Rectangle scale;
   string text;
   i32 fontsize;

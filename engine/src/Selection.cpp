@@ -76,12 +76,6 @@ void Selection::update(bool IconsSeletable, bool ShadersSelectable) {
       case OBJECT:
         break;
       case SHADERICON:
-        if (CheckCollisionPointRec(Mouse, *shaderBox)) {
-          if (InspectorRef->SelectedObject) {
-            auto p = (ShaderIcon *)Selected->ptr;
-            InspectorRef->SelectedObject->setShader(p->text, p->shader.get());
-          }
-        }
         break;
       }
     } else {

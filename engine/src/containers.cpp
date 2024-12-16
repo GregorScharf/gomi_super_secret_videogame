@@ -6,6 +6,7 @@
 #include "ShaderIcon.hpp"
 #include "fonts.hpp"
 #include "list.hpp"
+#include "uids.hpp"
 #include <filesystem>
 #include <memory>
 #include <raylib.h>
@@ -28,21 +29,24 @@ TextureIcon *IconContainer::add_new(string path, i32 x, i32 y) {
 }
 
 GameObjectContainer::GameObjectContainer() {
-  Layers.push_back(new DLinkedList<GameObject *>());
+  // i love tuples
+  Layers.push_back(
+      new Layer(UIDGenerator::GetNewUid(), new DLinkedList<GameObject *>()));
 }
 
 GameObject *GameObjectContainer::add_new(TextureIcon *icon, Camera2D *camera,
                                          u8 Layer) {
   if (Layer >= Layers.size()) {
     for (i32 i = Layers.size(); i <= Layer; i++) {
-      Layers.push_back(new DLinkedList<GameObject *>());
+      Layers.push_back(new struct Layer(UIDGenerator::GetNewUid(),
+                                        new DLinkedList<GameObject *>()));
     }
   }
 
   Vector2 mouse = GetMousePosition();
   auto newObject = new GameObject(GetScreenToWorld2D(mouse, *camera),
                                   &icon->texture, icon->text, Layer);
-  auto ref = Layers[Layer]->append(newObject);
+  auto ref = Layers[Layer]->Layer->append(newObject);
   newObject->ObjectListKey = ref;
   return newObject;
 }
@@ -52,13 +56,13 @@ GameObject *GameObjectContainer::add_new(TextureIcon *icon, Camera2D *camera,
 // sugar
 void GameObjectContainer::erase(node<GameObject *> *node) {
   if (Layers[0]) {
-    Layers[0]->erase(node);
+    Layers[0]->Layer->erase(node);
   }
 }
 
 void GameObjectContainer::foreach (std::function<void(GameObject *)> func) {
   for (auto layer : Layers) {
-    layer->foreach (func);
+    layer->Layer->foreach (func);
   }
 }
 
@@ -67,11 +71,12 @@ void GameObjectContainer::draw(Camera2D *camera) {
   BeginMode2D(*camera);
   for (auto layer : Layers) {
     if (!(Layers[*currentLayer] == layer)) {
-      layer->foreach ([](GameObject *obj) { obj->draw(); });
+      layer->Layer->foreach ([camera](GameObject *obj) { obj->draw(camera); });
     }
   }
 
-  Layers[*currentLayer]->foreach ([camera](GameObject *obj) { obj->draw(); });
+  Layers[*currentLayer]->Layer->foreach (
+      [camera](GameObject *obj) { obj->draw(camera); });
   EndMode2D();
 }
 void ShaderIconContainer::foreach (std::function<void(ShaderIcon *)> func) {
@@ -123,7 +128,8 @@ void LayerContainer::add_new() {
   // hard cap that shit
   if (!(LayerAmount > 254)) {
     Icons.append(new LayerIcon(LayerAmount, barFrameRef));
-    GameObjectstRef->Layers.push_back(new DLinkedList<GameObject *>());
+    GameObjectstRef->Layers.push_back(new struct Layer(
+        UIDGenerator::GetNewUid(), new DLinkedList<GameObject *>()));
     LayerAmount++;
   }
 }
@@ -161,4 +167,11 @@ void LayerContainer::update() {
       }
     });
   }
+}
+
+void LayerContainer::clear() {
+  this->Icons.clear_all();
+  this->LayerAmount = 1;
+  this->currentLayer = 0;
+  this->Icons.append(new LayerIcon(currentLayer, barFrameRef));
 }

@@ -12,7 +12,7 @@ ShaderIcon::ShaderIcon(string &path, i32 x, i32 y) {
       128,
   };
 
-  shader = make_unique<ShaderObject>(path);
+  shader = new ShaderObject(path);
   // just realized this wont be portable for windows
   text = path.substr(path.find_last_of('/') + 1,
                      path.size() - path.find_last_of('/') - 1);

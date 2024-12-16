@@ -4,10 +4,12 @@
 #include "Icons.hpp"
 #include "ObjectDragging.hpp"
 #include "ObjectInspector.hpp"
+#include "Serializer.hpp"
 #include "ShaderIcon.hpp"
 #include "containers.hpp"
 #include "fonts.hpp"
 #include "utils.hpp"
+#include <filesystem>
 #include <memory>
 #include <raylib.h>
 
@@ -35,11 +37,9 @@ EngineState::EngineState() {
 
   selection = make_unique<Selection>(Objects, icons, &SceneCam);
 
-  inspector =
-      make_shared<ObjectInspector>(&selection->selectionWindow, Objects);
   ShaderIcons = make_shared<ShaderIconContainer>();
+  inspector = make_shared<ObjectInspector>(Objects, ShaderIcons);
 
-  selection->shaderBox = &inspector->shaderBox;
   selection->InspectorRef = inspector;
 
   i32 left_offset_tx = 0;
@@ -51,7 +51,9 @@ EngineState::EngineState() {
   SceneCam.target = {
       (f32)(GetScreenWidth() - selection->selectionWindow.width) / 2,
       (f32)(GetScreenHeight() - INSPECTOR_HEIGHT) / 2};
-  SceneCam.target = {(f32)(GetScreenWidth()-selection->selectionWindow.width) / 2, (f32)(GetScreenHeight() - INSPECTOR_HEIGHT)/ 2};
+  SceneCam.target = {
+      (f32)(GetScreenWidth() - selection->selectionWindow.width) / 2,
+      (f32)(GetScreenHeight() - INSPECTOR_HEIGHT) / 2};
   SceneCam.offset = {(f32)GetScreenWidth() / 2, (f32)GetScreenHeight() / 2};
   SceneCam.rotation = 0;
   SceneCam.zoom = 1;
@@ -75,7 +77,6 @@ EngineState::EngineState() {
   selection->currentLayer = &LayerIcons->currentLayer;
   Bar.Layers->SelectedLayer = &LayerIcons->currentLayer;
 
-  // sweet mother of jesus
   for (const auto &entry : fs::directory_iterator(path)) {
     if (entry.is_regular_file()) {
       if (endswith(entry.path(), ".png")) {
@@ -106,10 +107,68 @@ EngineState::EngineState() {
   this->loop();
 }
 
+void EngineState::reload(string load_file) {
+
+  if (std::filesystem::is_regular_file(load_file)) {
+
+    // TODO: Serialize everything to file
+
+    // deinitialize all we have right now
+
+    Objects->foreach ([](GameObject *obj) { delete obj; });
+    for (auto layer : Objects->Layers) {
+      delete layer;
+    }
+
+    icons->foreach ([](TextureIcon *icon) { delete icon; });
+    ShaderIcons->foreach ([](ShaderIcon *icon) { delete icon; });
+    LayerIcons->clear();
+
+    // TODO:de-Serialize from load_file
+
+    // after that load all relevant assets from the directory of load_file
+    {
+      i32 left_offset_tx = 0;
+      i32 left_offset_sh = 0;
+
+      i32 top_offset_tx = 0;
+      i32 top_offset_sh = 0;
+
+      string path = load_file.substr(load_file.find_last_of('/'));
+      for (const auto &entry : fs::directory_iterator(path)) {
+        if (entry.is_regular_file()) {
+          if (endswith(entry.path(), ".png")) {
+            TextureIcon *icon =
+                icons->add_new(entry.path(), left_offset_tx * BOX_WIDTH,
+                               top_offset_tx * (BOX_WIDTH / 2));
+            selection->new_object<TextureIcon>(icon, ICON);
+            left_offset_tx++;
+            if (left_offset_tx * BOX_WIDTH >= BOX_WIDTH * 2) {
+              left_offset_tx = 0;
+              top_offset_tx++;
+            }
+          }
+          if (endswith(entry.path(), ".frag") ||
+              endswith(entry.path(), ".shader")) {
+            ShaderIcon *icon =
+                ShaderIcons->add_new(entry.path(), left_offset_sh * BOX_WIDTH,
+                                     top_offset_sh * BOX_WIDTH);
+            selection->new_object<ShaderIcon>(icon, SHADERICON);
+            left_offset_sh++;
+            if (left_offset_sh * BOX_WIDTH >= BOX_WIDTH * 2) {
+              left_offset_sh = 0;
+              top_offset_sh++;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 EngineState::~EngineState() {
 
-  //Serializer::ToToml(*this->Objects.get(), *this->icons.get());
-
+  Serializer::ToToml(*this->Objects.get(), *this->icons.get());
 
   this->selection.reset();
   this->Objects->foreach ([](GameObject *obj) {
@@ -151,14 +210,14 @@ void EngineState::loop() {
                                  {selection->selectionWindow.width, 0,
                                   GetScreenWidth() - selectionWindow.width,
                                   (f32)GetScreenHeight() - INSPECTOR_HEIGHT})) {
-        inspector->clear();
         bool one_selected = false;
         Objects->foreach ([this, mouse, &one_selected](GameObject *obj) {
           Rectangle r = RecWorldToScreen(&obj->matrix, &SceneCam);
 
           r.x -= r.width / 2;
           r.y -= r.height / 2;
-          if (CheckCollisionPointRec(mouse, r)) {
+          if (AngledRecPointCollision(mouse, r, {r.width / 2, r.height / 2},
+                                      obj->rotation)) {
             inspector->fill(obj);
             dragger->fill(obj);
             one_selected = true;
@@ -166,10 +225,11 @@ void EngineState::loop() {
         });
         if (!one_selected) {
           dragger->clear();
-          inspector->clear();
+
+          if (!CheckCollisionPointRec(mouse, inspector->box)) {
+            inspector->clear();
+          }
         }
-      }
-      if (Bar.Layers->IsOpen) {
       }
     }
 
@@ -193,7 +253,7 @@ void EngineState::loop() {
       LayerIcons->update();
       LayerIcons->draw();
     }
-    inspector->draw(&selection->selectionWindow);
+    inspector->draw();
     selection->draw();
     Bar.draw();
 

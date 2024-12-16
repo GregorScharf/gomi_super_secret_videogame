@@ -40,6 +40,16 @@ public:
 
     return head->last;
   };
+
+  void clear_all() {
+    node<T> *tmp;
+    while (head->last) {
+      tmp = head;
+      head = head->last;
+      delete tmp;
+    }
+  }
+
   void foreach (std::function<void(T)> func) {
     node<T> *tmp = head;
     while (tmp->last) {

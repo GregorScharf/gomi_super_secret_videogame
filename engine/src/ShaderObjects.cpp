@@ -22,6 +22,7 @@ ShaderObject::ShaderObject(string path) {
       uniforms.emplace(tmp, GetShaderLocation(shader, tmp.c_str()));
     }
   }
+  this->path = path;
 }
 Shader *ShaderObject::get() { return &this->shader; }
 

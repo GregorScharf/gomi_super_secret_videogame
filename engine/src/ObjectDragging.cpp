@@ -59,9 +59,12 @@ void Dragger::update() {
 void Dragger::draw() {
   if (Selected) {
     Rectangle r = RecWorldToScreen(&Selected->matrix, Camera);
+
     r.x -= r.width / 2;
     r.y -= r.height / 2;
-    DrawRectangleLinesEx(r, 3, Color{255, 180, 100, 255});
+
+    DrawRectangleAngleEx(r, {r.width / 2, r.height / 2}, 3, Selected->rotation,
+                         ORANGE);
   }
 }
 
